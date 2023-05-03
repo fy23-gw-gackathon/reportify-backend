@@ -24,6 +24,7 @@ const (
 func main() {
 	// Dependency Injection
 	db := driver.NewDB()
+	gptDriver := driver.NewGptDriver()
 
 	userPersistence := persistence.NewUserPersistence()
 	organizationPersistence := persistence.NewOrganizationPersistence()
@@ -40,7 +41,11 @@ func main() {
 	app.Use(middleware.Transaction(db))
 	app.Use(middleware.Cors())
 	app.GET("/", func(ctx *gin.Context) {
-		ctx.String(http.StatusOK, "It works")
+		message, err := gptDriver.RequestMessage("test")
+		if err != nil {
+			return
+		}
+		ctx.JSON(http.StatusOK, message)
 	})
 	//org := app.Group("/organizations")
 	app.GET("/organizations", handleResponse(organizationController.GetOrganizations))

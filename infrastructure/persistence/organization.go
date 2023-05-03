@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 	"reportify-backend/entity"
 	"reportify-backend/infrastructure/driver"
-	"time"
+	"reportify-backend/infrastructure/persistence/model"
 )
 
 type OrganizationPersistence struct{}
@@ -14,15 +14,8 @@ func NewOrganizationPersistence() *OrganizationPersistence {
 	return &OrganizationPersistence{}
 }
 
-type Organization struct {
-	ID        string    `gorm:"primaryKey"`
-	Name      string    `gorm:"unique"`
-	CreatedAt time.Time `gorm:"autoCreateTime"`
-	UpdatedAt time.Time `gorm:"autoUpdateTime"`
-}
-
 func (p OrganizationPersistence) GetOrganizations(ctx context.Context, limit *int, offset *int) ([]*entity.Organization, error) {
-	var records []*Organization
+	var records []*model.Organization
 	db, _ := ctx.Value(driver.TxKey).(*gorm.DB)
 	if limit != nil {
 		db = db.Limit(*limit)

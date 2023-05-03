@@ -1,0 +1,38 @@
+version: "3.9"
+services:
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: build/Dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_ENV: "dev"
+      DATABASE_URL: "db:db@tcp(db:3306)/db?charset=utf8&parseTime=true"
+      TZ: Asia/Tokyo
+  db:
+    image: mysql:8.0
+    container_name: db
+    environment:
+      MYSQL_DATABASE: db
+      MYSQL_USER: db
+      MYSQL_PASSWORD: db
+      TZ: 'Asia/Tokyo'
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 5s
+      retries: 10
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./data/init:/docker-entrypoint-initdb.d
+    ports:
+      - "3306:3306"
+    
+  

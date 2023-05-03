@@ -1,0 +1,56 @@
+definitions:
+  controller.GetOrganizationsResponse:
+    properties:
+      organizations:
+        items:
+          $ref: '#/definitions/entity.Organization'
+        type: array
+    type: object
+  entity.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  entity.Organization:
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /organizations:
+    get:
+      consumes:
+      - application/json
+      description: get organizations
+      parameters:
+      - description: limit
+        in: query
+        name: limit
+        type: string
+      - description: offset
+        in: query
+        name: offset
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.GetOrganizationsResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: get organizations
+      tags:
+      - Organization
+swagger: "2.0"

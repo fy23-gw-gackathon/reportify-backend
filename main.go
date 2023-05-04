@@ -2,9 +2,6 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	swaggerFiles "github.com/swaggo/files"
-	ginSwagger "github.com/swaggo/gin-swagger"
 	"log"
 	"net/http"
 	"os"
@@ -15,6 +12,10 @@ import (
 	"reportify-backend/infrastructure/middleware"
 	"reportify-backend/infrastructure/persistence"
 	"reportify-backend/usecase"
+
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 const (
@@ -44,7 +45,7 @@ func main() {
 	app.Use(middleware.Transaction(db))
 	app.Use(middleware.Cors())
 	app.GET("/", func(ctx *gin.Context) {
-		message, err := gptDriver.RequestMessage([]*entity.Conversation{}, "test")
+		message, err := gptDriver.RequestMessage("", []*entity.Conversation{}, "test")
 		if err != nil {
 			return
 		}

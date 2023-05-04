@@ -47,7 +47,7 @@ func (p OrganizationPersistence) GetMVV(ctx context.Context, organizationId stri
 		ID: record.ID,
 		OrganizationID: record.OrganizationID,
 		Mission: record.Mission,
-		Vision: record.Mission,
+		Vision: record.Vision,
 		Value: record.Value,
 	}, nil
 }

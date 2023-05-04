@@ -1,6 +1,7 @@
 package persistence
 
 import (
+	"fmt"
 	"reportify-backend/entity"
 	"reportify-backend/infrastructure/driver"
 	"reportify-backend/infrastructure/persistence/model"
@@ -8,6 +9,37 @@ import (
 	"github.com/google/uuid"
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
+)
+
+var (
+	// AIをメンターにさせるためのプロンプト
+	reportSystemPromptTemplate = `あなたはとある会社のチームに所属し、新人教育を担当しています。あなたのチームには新人が何人かおり、これらの新人のメンターとなりました。
+	新人がチームでうまく成長できる為に、新人がその日に行ったことと、昔と比べてどのように成長したかを把握する必要があります。あなたは、新人に日報を書いてもらい、メンターである自分からレビューしてフィードバックを返す手段をとりました。
+	
+	新人は下記の形式で日報を書きます:
+	
+	# 日報 YYYY-MM-DD
+	
+	## 今日やったこと
+	
+	## 学んだこと、感じたこと
+	
+	## 明日やること
+	
+	YYYY-MM-DDにはその日の日付が入ります。あなたは最新の日報、過去の日報、過去の日報へのフィードバックとチームのMission、Vision、Valueをもとに新人にフィードバックを返します。
+	そしてあなたが所属しているチームのMission、Vision、Valueは下記のとおりです。
+	Mission: %s
+	Vision: %s
+	Value: %s
+	
+	フィードバックの内容として、下記の内容を含めてください。わかりやすいようにMarkdown形式で箇条書きしてください。
+	- 成長点
+	- 課題点
+	- 今後の成長のために何すれば良いのか
+	- 明日は特にどこを注意すれば良いのか
+	- 日報として何を気をつけたほうが良いのか
+	
+	成長点については、過去データが無い場合はなしで大丈夫です。`
 )
 
 type ConversationPersistence struct {
@@ -43,7 +75,8 @@ func (u *ConversationPersistence) SendReport(ctx context.Context, userID string,
 	db, _ := ctx.Value(driver.TxKey).(*gorm.DB)
 	var result entity.Conversation
 	db.Transaction(func(tx *gorm.DB) error {
-		resp, err := u.GptDriver.RequestMessage(prevMessages, message)
+		systemPrompt := fmt.Sprintf(reportSystemPromptTemplate, mvv.Mission, mvv.Vision, mvv.Value)
+		resp, err := u.GptDriver.RequestMessage(systemPrompt, prevMessages, message)
 		if err != nil {
 			return err
 		}

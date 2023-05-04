@@ -15,6 +15,7 @@ type GptDriver struct {
 }
 
 func NewGptDriver() *GptDriver {
+
 	return &GptDriver{
 		openai.NewClient("your token"),
 	}

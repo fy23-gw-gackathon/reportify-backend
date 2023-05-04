@@ -16,3 +16,7 @@ func NewOrganizationUseCase(organizationRepo OrganizationRepo) *OrganizationUseC
 func (u *OrganizationUseCase) GetOrganizations(ctx context.Context, limit *int, offset *int) ([]*entity.Organization, error) {
 	return u.OrganizationRepo.GetOrganizations(ctx, limit, offset)
 }
+
+func (u *OrganizationUseCase) GetMVV(ctx context.Context, organizationId string) (*entity.MVV, error) {
+	return u.OrganizationRepo.GetMVV(ctx, organizationId)
+}

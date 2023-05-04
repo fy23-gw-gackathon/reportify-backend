@@ -14,3 +14,21 @@ CREATE TABLE IF NOT EXISTS organizations (
    name VARCHAR(255) NOT NULL,
    PRIMARY KEY (id)
 );
+
+CREATE TABLE IF NOT EXISTS conversations (
+   id VARCHAR(36) NOT NULL,
+   user_id VARCHAR(36) NOT NULL,
+   is_from_ai tinyint(1) NOT NULL DEFAULT '0',
+   content TEXT NOT NULL,
+   created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+   PRIMARY KEY (id)
+);
+
+CREATE TABLE IF NOT EXISTS mvvs (
+   id VARCHAR(36) NOT NULL,
+   organization_id VARCHAR(36) NOT NULL,
+   mission VARCHAR(255) NOT NULL,
+   vison VARCHAR(255) NOT NULL,
+   value VARCHAR(255) NOT NULL,
+   PRIMARY KEY (id)
+);

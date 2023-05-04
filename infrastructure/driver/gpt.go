@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"os"
+	"reportify-backend/entity"
 	"time"
 
 	"github.com/sashabaranov/go-openai"
@@ -26,7 +27,7 @@ func NewGptDriver() *GptDriver {
 	}
 }
 
-func (d *GptDriver) RequestMessage(input string) (openai.ChatCompletionResponse, error) {
+func (d *GptDriver) RequestMessage(prevMessages []*entity.Conversation, message string) (openai.ChatCompletionResponse, error) {
 	// バックオフリトライ
 	retryCnt := 0
 	for {
@@ -41,7 +42,7 @@ func (d *GptDriver) RequestMessage(input string) (openai.ChatCompletionResponse,
 					},
 					{
 						Role:    openai.ChatMessageRoleUser,
-						Content: input,
+						Content: message,
 					},
 				},
 			},

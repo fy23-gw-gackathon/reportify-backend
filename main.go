@@ -28,12 +28,15 @@ func main() {
 
 	userPersistence := persistence.NewUserPersistence()
 	organizationPersistence := persistence.NewOrganizationPersistence()
+	conversationPersistence := persistence.NewConversationPersistence(gptDriver)
 
 	userUseCase := usecase.NewUserUseCase(userPersistence)
 	organizationUseCase := usecase.NewOrganizationUseCase(organizationPersistence)
+	conversationUseCase := usecase.NewConversationUseCase(conversationPersistence)
 
 	_ = controller.NewUserController(userUseCase)
 	organizationController := controller.NewOrganizationController(organizationUseCase)
+	conversationController := controller.NewConversationController(conversationUseCase, organizationUseCase)
 
 	// Setup webserver
 	app := gin.Default()
@@ -41,13 +44,14 @@ func main() {
 	app.Use(middleware.Transaction(db))
 	app.Use(middleware.Cors())
 	app.GET("/", func(ctx *gin.Context) {
-		message, err := gptDriver.RequestMessage("test")
+		message, err := gptDriver.RequestMessage([]*entity.Conversation{}, "test")
 		if err != nil {
 			return
 		}
 		ctx.JSON(http.StatusOK, message)
 	})
 	//org := app.Group("/organizations")
+	app.POST("/report",handleResponse(conversationController.SubmitReport))
 	app.GET("/organizations", handleResponse(organizationController.GetOrganizations))
 
 	runApp(app)

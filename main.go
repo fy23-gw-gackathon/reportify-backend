@@ -31,8 +31,9 @@ func main() {
 	userUseCase := usecase.NewUserUseCase(userPersistence)
 	organizationUseCase := usecase.NewOrganizationUseCase(organizationPersistence)
 
-	_ = controller.NewUserController(userUseCase)
+	userController := controller.NewUserController(userUseCase)
 	organizationController := controller.NewOrganizationController(organizationUseCase)
+	reportController := controller.NewReportController(nil)
 
 	// Setup webserver
 	app := gin.Default()
@@ -42,8 +43,17 @@ func main() {
 	app.GET("/", func(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "It works")
 	})
-	//org := app.Group("/organizations")
 	app.GET("/organizations", handleResponse(organizationController.GetOrganizations))
+
+	org := app.Group("/organizations/:organizationCode")
+	org.GET("/", handleResponse(organizationController.GetOrganization))
+	org.PUT("/", handleResponse(organizationController.UpdateOrganization))
+
+	org.GET("/reports", handleResponse(reportController.GetReports))
+	org.POST("/reports", handleResponse(reportController.CreateReport))
+	org.GET("/reports/:reportId", handleResponse(reportController.GetReport))
+
+	org.GET("/users", handleResponse(userController.GetUsers))
 
 	runApp(app)
 }

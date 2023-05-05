@@ -18,7 +18,7 @@ const docTemplate = `{
     "paths": {
         "/organizations": {
             "get": {
-                "description": "get organizations",
+                "description": "自分が所属する組織のみ取得できる",
                 "consumes": [
                     "application/json"
                 ],
@@ -28,30 +28,373 @@ const docTemplate = `{
                 "tags": [
                     "Organization"
                 ],
-                "summary": "get organizations",
+                "summary": "組織リスト取得API",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.OrganizationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "BadRequest",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizations/{organizationCode}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Organization"
+                ],
+                "summary": "組織取得API",
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "limit",
-                        "name": "limit",
-                        "in": "query"
-                    },
-                    {
-                        "type": "string",
-                        "description": "offset",
-                        "name": "offset",
-                        "in": "query"
+                        "description": "組織コード",
+                        "name": "organizationCode",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.GetOrganizationsResponse"
+                            "$ref": "#/definitions/controller.OrganizationResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "BadRequest",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Organization"
+                ],
+                "summary": "組織更新API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "組織コード",
+                        "name": "organizationCode",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "組織更新リクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.UpdateOrganizationRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.OrganizationResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizations/{organizationCode}/reports": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "summary": "日報リスト取得API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ユーザID",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "組織コード",
+                        "name": "organizationCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ReportsResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "BadRequest",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "summary": "日報作成API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ユーザID",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "組織コード",
+                        "name": "organizationCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/controller.CreateReportRequest"
+                        }
+                    },
+                    "400": {
+                        "description": "BadRequest",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizations/{organizationCode}/reports/{reportId}": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "summary": "日報取得API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ユーザID",
+                        "name": "userId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "組織コード",
+                        "name": "organizationCode",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "日報ID",
+                        "name": "organizationCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.ReportResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/organizations/{organizationCode}/users": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "組織のユーザリスト取得API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "組織コード",
+                        "name": "organizationCode",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controller.UsersResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
                         "schema": {
                             "$ref": "#/definitions/entity.ErrorResponse"
                         }
@@ -67,13 +410,156 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "controller.GetOrganizationsResponse": {
+        "controller.CreateReportRequest": {
             "type": "object",
             "properties": {
-                "organizations": {
+                "body": {
+                    "description": "本文",
+                    "type": "string"
+                },
+                "tasks": {
+                    "description": "実施したタスクリスト",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Organization"
+                        "$ref": "#/definitions/entity.Task"
+                    }
+                }
+            }
+        },
+        "controller.MvvResponse": {
+            "type": "object",
+            "properties": {
+                "mission": {
+                    "description": "ミッション",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "バリュー",
+                    "type": "string"
+                },
+                "vision": {
+                    "description": "ビジョン",
+                    "type": "string"
+                }
+            }
+        },
+        "controller.OrganizationResponse": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "組織コード",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "組織ID",
+                    "type": "string"
+                },
+                "mvv": {
+                    "$ref": "#/definitions/controller.MvvResponse"
+                },
+                "name": {
+                    "description": "組織名",
+                    "type": "string"
+                }
+            }
+        },
+        "controller.ReportResponse": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "description": "本文",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "日報レスポンス",
+                    "type": "string"
+                },
+                "reviewBody": {
+                    "description": "レビュー本文",
+                    "type": "string"
+                },
+                "tasks": {
+                    "description": "実施したタスクリスト",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Task"
+                    }
+                },
+                "userId": {
+                    "description": "ユーザID",
+                    "type": "string"
+                }
+            }
+        },
+        "controller.ReportsResponse": {
+            "type": "object",
+            "properties": {
+                "reports": {
+                    "description": "日報リスト",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controller.ReportResponse"
+                    }
+                }
+            }
+        },
+        "controller.UpdateOrganizationRequest": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "組織コード",
+                    "type": "string"
+                },
+                "mission": {
+                    "description": "ミッション",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "組織名",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "バリュー",
+                    "type": "string"
+                },
+                "vision": {
+                    "description": "ビジョン",
+                    "type": "string"
+                }
+            }
+        },
+        "controller.UserResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "description": "メールアドレス",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "ユーザID",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "ユーザ名",
+                    "type": "string"
+                },
+                "organizations": {
+                    "description": "所属する組織リスト",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.UserOrganization"
+                    }
+                }
+            }
+        },
+        "controller.UsersResponse": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "description": "ユーザリスト",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/controller.UserResponse"
                     }
                 }
             }
@@ -86,14 +572,33 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.Organization": {
+        "entity.Task": {
             "type": "object",
             "properties": {
-                "id": {
+                "finishedAt": {
+                    "description": "終了日時",
                     "type": "string"
                 },
                 "name": {
+                    "description": "タスク名",
                     "type": "string"
+                },
+                "startedAt": {
+                    "description": "開始日時",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.UserOrganization": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "組織ID",
+                    "type": "string"
+                },
+                "is_admin": {
+                    "description": "ロール",
+                    "type": "boolean"
                 }
             }
         }

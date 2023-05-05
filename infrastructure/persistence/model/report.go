@@ -8,6 +8,7 @@ type Report struct {
 	ReviewBody string
 	UserID     string
 	User       *User
+	Tasks      []*Task
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }

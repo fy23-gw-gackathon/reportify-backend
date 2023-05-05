@@ -1,9 +1,110 @@
 definitions:
-  controller.GetOrganizationsResponse:
+  controller.CreateReportRequest:
     properties:
-      organizations:
+      body:
+        description: 本文
+        type: string
+      tasks:
+        description: 実施したタスクリスト
         items:
-          $ref: '#/definitions/entity.Organization'
+          $ref: '#/definitions/entity.Task'
+        type: array
+    type: object
+  controller.MvvResponse:
+    properties:
+      mission:
+        description: ミッション
+        type: string
+      value:
+        description: バリュー
+        type: string
+      vision:
+        description: ビジョン
+        type: string
+    type: object
+  controller.OrganizationResponse:
+    properties:
+      code:
+        description: 組織コード
+        type: string
+      id:
+        description: 組織ID
+        type: string
+      mvv:
+        $ref: '#/definitions/controller.MvvResponse'
+      name:
+        description: 組織名
+        type: string
+    type: object
+  controller.ReportResponse:
+    properties:
+      body:
+        description: 本文
+        type: string
+      id:
+        description: 日報レスポンス
+        type: string
+      reviewBody:
+        description: レビュー本文
+        type: string
+      tasks:
+        description: 実施したタスクリスト
+        items:
+          $ref: '#/definitions/entity.Task'
+        type: array
+      userId:
+        description: ユーザID
+        type: string
+    type: object
+  controller.ReportsResponse:
+    properties:
+      reports:
+        description: 日報リスト
+        items:
+          $ref: '#/definitions/controller.ReportResponse'
+        type: array
+    type: object
+  controller.UpdateOrganizationRequest:
+    properties:
+      code:
+        description: 組織コード
+        type: string
+      mission:
+        description: ミッション
+        type: string
+      name:
+        description: 組織名
+        type: string
+      value:
+        description: バリュー
+        type: string
+      vision:
+        description: ビジョン
+        type: string
+    type: object
+  controller.UserResponse:
+    properties:
+      email:
+        description: メールアドレス
+        type: string
+      id:
+        description: ユーザID
+        type: string
+      name:
+        description: ユーザ名
+        type: string
+      organizations:
+        description: 所属する組織リスト
+        items:
+          $ref: '#/definitions/entity.UserOrganization'
+        type: array
+    type: object
+  controller.UsersResponse:
+    properties:
+      users:
+        description: ユーザリスト
+        items:
+          $ref: '#/definitions/controller.UserResponse'
         type: array
     type: object
   entity.ErrorResponse:
@@ -11,12 +112,26 @@ definitions:
       message:
         type: string
     type: object
-  entity.Organization:
+  entity.Task:
     properties:
-      id:
+      finishedAt:
+        description: 終了日時
         type: string
       name:
+        description: タスク名
         type: string
+      startedAt:
+        description: 開始日時
+        type: string
+    type: object
+  entity.UserOrganization:
+    properties:
+      id:
+        description: 組織ID
+        type: string
+      is_admin:
+        description: ロール
+        type: boolean
     type: object
 info:
   contact: {}
@@ -25,15 +140,34 @@ paths:
     get:
       consumes:
       - application/json
-      description: get organizations
+      description: 自分が所属する組織のみ取得できる
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.OrganizationResponse'
+        "400":
+          description: BadRequest
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: 組織リスト取得API
+      tags:
+      - Organization
+  /organizations/{organizationCode}:
+    get:
+      consumes:
+      - application/json
       parameters:
-      - description: limit
-        in: query
-        name: limit
-        type: string
-      - description: offset
-        in: query
-        name: offset
+      - description: 組織コード
+        in: path
+        name: organizationCode
+        required: true
         type: string
       produces:
       - application/json
@@ -41,16 +175,224 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.GetOrganizationsResponse'
+            $ref: '#/definitions/controller.OrganizationResponse'
         "400":
-          description: Bad Request
+          description: BadRequest
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "403":
+          description: Forbidden
           schema:
             $ref: '#/definitions/entity.ErrorResponse'
         "404":
           description: Not Found
           schema:
             $ref: '#/definitions/entity.ErrorResponse'
-      summary: get organizations
+      summary: 組織取得API
       tags:
       - Organization
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 組織コード
+        in: path
+        name: organizationCode
+        required: true
+        type: string
+      - description: 組織更新リクエスト
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UpdateOrganizationRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.OrganizationResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: 組織更新API
+      tags:
+      - Organization
+  /organizations/{organizationCode}/reports:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ユーザID
+        in: query
+        name: userId
+        required: true
+        type: string
+      - description: 組織コード
+        in: path
+        name: organizationCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ReportsResponse'
+        "400":
+          description: BadRequest
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: 日報リスト取得API
+      tags:
+      - Report
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ユーザID
+        in: query
+        name: userId
+        required: true
+        type: string
+      - description: 組織コード
+        in: path
+        name: organizationCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/controller.CreateReportRequest'
+        "400":
+          description: BadRequest
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: 日報作成API
+      tags:
+      - Report
+  /organizations/{organizationCode}/reports/{reportId}:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: ユーザID
+        in: query
+        name: userId
+        required: true
+        type: string
+      - description: 組織コード
+        in: path
+        name: organizationCode
+        required: true
+        type: string
+      - description: 日報ID
+        in: path
+        name: organizationCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.ReportResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: 日報取得API
+      tags:
+      - Report
+  /organizations/{organizationCode}/users:
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: 組織コード
+        in: path
+        name: organizationCode
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controller.UsersResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: 組織のユーザリスト取得API
+      tags:
+      - User
 swagger: "2.0"

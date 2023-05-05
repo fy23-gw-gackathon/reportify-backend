@@ -27,9 +27,9 @@ type ReportResponse struct {
 	// ユーザID
 	UserId string `json:"userId"`
 	// 本文
-	Body *string `json:"body"`
+	Body string `json:"body"`
 	// レビュー本文
-	ReviewBody string `json:"reviewBody"`
+	ReviewBody *string `json:"reviewBody"`
 	// 実施したタスクリスト
 	Tasks []entity.Task `json:"tasks"`
 }

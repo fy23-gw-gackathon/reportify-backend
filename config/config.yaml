@@ -1,0 +1,9 @@
+database:
+  url: ""
+app:
+  env: ""
+  port: 8080
+allowOrigins:
+  - "http://localhost:3000"
+openAI:
+  token: ""

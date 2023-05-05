@@ -2,7 +2,7 @@ package entity
 
 type Organization struct {
 	// 組織ID
-	Id string `json:"id"`
+	ID string `json:"id"`
 	// 組織名
 	Name string `json:"name"`
 	// 組織コード

@@ -5,22 +5,18 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"os"
+	"reportify-backend/config"
 )
 
 const TxKey = "transactionKey"
 
-var (
-	dsn    = os.Getenv("DATABASE_URL")
-	appEnv = os.Getenv("APP_ENV")
-)
-
-func NewDB() *gorm.DB {
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
+func NewDB(cfg config.Config) *gorm.DB {
+	db, err := gorm.Open(mysql.Open(cfg.Database.Url), &gorm.Config{})
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	if appEnv == "dev" {
+	if cfg.App.Env == "dev" {
 		db = db.Debug()
 	}
 	return db

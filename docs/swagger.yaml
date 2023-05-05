@@ -10,58 +10,20 @@ definitions:
           $ref: '#/definitions/entity.Task'
         type: array
     type: object
-  controller.MvvResponse:
+  controller.OrganizationsResponse:
     properties:
-      mission:
-        description: ミッション
-        type: string
-      value:
-        description: バリュー
-        type: string
-      vision:
-        description: ビジョン
-        type: string
-    type: object
-  controller.OrganizationResponse:
-    properties:
-      code:
-        description: 組織コード
-        type: string
-      id:
-        description: 組織ID
-        type: string
-      mvv:
-        $ref: '#/definitions/controller.MvvResponse'
-      name:
-        description: 組織名
-        type: string
-    type: object
-  controller.ReportResponse:
-    properties:
-      body:
-        description: 本文
-        type: string
-      id:
-        description: 日報レスポンス
-        type: string
-      reviewBody:
-        description: レビュー本文
-        type: string
-      tasks:
-        description: 実施したタスクリスト
+      organizations:
+        description: 組織リスト
         items:
-          $ref: '#/definitions/entity.Task'
+          $ref: '#/definitions/entity.Organization'
         type: array
-      userId:
-        description: ユーザID
-        type: string
     type: object
   controller.ReportsResponse:
     properties:
       reports:
         description: 日報リスト
         items:
-          $ref: '#/definitions/controller.ReportResponse'
+          $ref: '#/definitions/entity.Report'
         type: array
     type: object
   controller.UpdateOrganizationRequest:
@@ -82,7 +44,78 @@ definitions:
         description: ビジョン
         type: string
     type: object
-  controller.UserResponse:
+  controller.UsersResponse:
+    properties:
+      users:
+        description: ユーザリスト
+        items:
+          $ref: '#/definitions/entity.User'
+        type: array
+    type: object
+  entity.ErrorResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  entity.Mvv:
+    properties:
+      mission:
+        description: ミッション
+        type: string
+      value:
+        description: バリュー
+        type: string
+      vision:
+        description: ビジョン
+        type: string
+    type: object
+  entity.Organization:
+    properties:
+      code:
+        description: 組織コード
+        type: string
+      id:
+        description: 組織ID
+        type: string
+      mvv:
+        $ref: '#/definitions/entity.Mvv'
+      name:
+        description: 組織名
+        type: string
+    type: object
+  entity.Report:
+    properties:
+      body:
+        description: 本文
+        type: string
+      id:
+        description: 日報レスポンス
+        type: string
+      reviewBody:
+        description: レビュー本文
+        type: string
+      tasks:
+        description: 実施したタスクリスト
+        items:
+          $ref: '#/definitions/entity.Task'
+        type: array
+      userId:
+        description: ユーザID
+        type: string
+    type: object
+  entity.Task:
+    properties:
+      finishedAt:
+        description: 終了日時
+        type: string
+      name:
+        description: タスク名
+        type: string
+      startedAt:
+        description: 開始日時
+        type: string
+    type: object
+  entity.User:
     properties:
       email:
         description: メールアドレス
@@ -98,31 +131,6 @@ definitions:
         items:
           $ref: '#/definitions/entity.UserOrganization'
         type: array
-    type: object
-  controller.UsersResponse:
-    properties:
-      users:
-        description: ユーザリスト
-        items:
-          $ref: '#/definitions/controller.UserResponse'
-        type: array
-    type: object
-  entity.ErrorResponse:
-    properties:
-      message:
-        type: string
-    type: object
-  entity.Task:
-    properties:
-      finishedAt:
-        description: 終了日時
-        type: string
-      name:
-        description: タスク名
-        type: string
-      startedAt:
-        description: 開始日時
-        type: string
     type: object
   entity.UserOrganization:
     properties:
@@ -147,7 +155,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.OrganizationResponse'
+            $ref: '#/definitions/controller.OrganizationsResponse'
         "400":
           description: BadRequest
           schema:
@@ -175,7 +183,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.OrganizationResponse'
+            $ref: '#/definitions/entity.Organization'
         "400":
           description: BadRequest
           schema:
@@ -216,9 +224,9 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.OrganizationResponse'
+            $ref: '#/definitions/entity.Organization'
         "400":
-          description: Bad Request
+          description: BadRequest
           schema:
             $ref: '#/definitions/entity.ErrorResponse'
         "401":
@@ -347,7 +355,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controller.ReportResponse'
+            $ref: '#/definitions/entity.Report'
         "401":
           description: Unauthorized
           schema:

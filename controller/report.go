@@ -20,24 +20,10 @@ type GetReportsQuery struct {
 	UserID string `form:"userId"`
 }
 
-// ReportResponse - 日報レスポンス
-type ReportResponse struct {
-	// 日報レスポンス
-	Id string `json:"id"`
-	// ユーザID
-	UserId string `json:"userId"`
-	// 本文
-	Body string `json:"body"`
-	// レビュー本文
-	ReviewBody *string `json:"reviewBody"`
-	// 実施したタスクリスト
-	Tasks []entity.Task `json:"tasks"`
-}
-
 // ReportsResponse - 日報リストレスポンス
 type ReportsResponse struct {
 	// 日報リスト
-	Reports []ReportResponse `json:"reports"`
+	Reports []entity.Report `json:"reports"`
 }
 
 // GetReports godoc
@@ -75,7 +61,7 @@ func (c *ReportController) GetReports(ctx *gin.Context) (interface{}, error) {
 // @Param   userId           query    string               true "ユーザID"
 // @Param   organizationCode path     string               true "組織コード"
 // @Param   organizationCode path     string               true "日報ID"
-// @Success 200              {object} ReportResponse       "OK"
+// @Success 200              {object} entity.Report        "OK"
 // @Failure 401              {object} entity.ErrorResponse "Unauthorized"
 // @Failure 403              {object} entity.ErrorResponse "Forbidden"
 // @Failure 404              {object} entity.ErrorResponse "Not Found"

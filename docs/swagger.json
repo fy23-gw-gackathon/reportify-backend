@@ -21,7 +21,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.OrganizationResponse"
+                            "$ref": "#/definitions/controller.OrganizationsResponse"
                         }
                     },
                     "400": {
@@ -64,7 +64,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.OrganizationResponse"
+                            "$ref": "#/definitions/entity.Organization"
                         }
                     },
                     "400": {
@@ -126,11 +126,11 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.OrganizationResponse"
+                            "$ref": "#/definitions/entity.Organization"
                         }
                     },
                     "400": {
-                        "description": "Bad Request",
+                        "description": "BadRequest",
                         "schema": {
                             "$ref": "#/definitions/entity.ErrorResponse"
                         }
@@ -323,7 +323,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controller.ReportResponse"
+                            "$ref": "#/definitions/entity.Report"
                         }
                     },
                     "401": {
@@ -414,68 +414,15 @@
                 }
             }
         },
-        "controller.MvvResponse": {
+        "controller.OrganizationsResponse": {
             "type": "object",
             "properties": {
-                "mission": {
-                    "description": "ミッション",
-                    "type": "string"
-                },
-                "value": {
-                    "description": "バリュー",
-                    "type": "string"
-                },
-                "vision": {
-                    "description": "ビジョン",
-                    "type": "string"
-                }
-            }
-        },
-        "controller.OrganizationResponse": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "description": "組織コード",
-                    "type": "string"
-                },
-                "id": {
-                    "description": "組織ID",
-                    "type": "string"
-                },
-                "mvv": {
-                    "$ref": "#/definitions/controller.MvvResponse"
-                },
-                "name": {
-                    "description": "組織名",
-                    "type": "string"
-                }
-            }
-        },
-        "controller.ReportResponse": {
-            "type": "object",
-            "properties": {
-                "body": {
-                    "description": "本文",
-                    "type": "string"
-                },
-                "id": {
-                    "description": "日報レスポンス",
-                    "type": "string"
-                },
-                "reviewBody": {
-                    "description": "レビュー本文",
-                    "type": "string"
-                },
-                "tasks": {
-                    "description": "実施したタスクリスト",
+                "organizations": {
+                    "description": "組織リスト",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Task"
+                        "$ref": "#/definitions/entity.Organization"
                     }
-                },
-                "userId": {
-                    "description": "ユーザID",
-                    "type": "string"
                 }
             }
         },
@@ -486,7 +433,7 @@
                     "description": "日報リスト",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/controller.ReportResponse"
+                        "$ref": "#/definitions/entity.Report"
                     }
                 }
             }
@@ -516,7 +463,109 @@
                 }
             }
         },
-        "controller.UserResponse": {
+        "controller.UsersResponse": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "description": "ユーザリスト",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.User"
+                    }
+                }
+            }
+        },
+        "entity.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Mvv": {
+            "type": "object",
+            "properties": {
+                "mission": {
+                    "description": "ミッション",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "バリュー",
+                    "type": "string"
+                },
+                "vision": {
+                    "description": "ビジョン",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Organization": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "description": "組織コード",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "組織ID",
+                    "type": "string"
+                },
+                "mvv": {
+                    "$ref": "#/definitions/entity.Mvv"
+                },
+                "name": {
+                    "description": "組織名",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Report": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "description": "本文",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "日報レスポンス",
+                    "type": "string"
+                },
+                "reviewBody": {
+                    "description": "レビュー本文",
+                    "type": "string"
+                },
+                "tasks": {
+                    "description": "実施したタスクリスト",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Task"
+                    }
+                },
+                "userId": {
+                    "description": "ユーザID",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.Task": {
+            "type": "object",
+            "properties": {
+                "finishedAt": {
+                    "description": "終了日時",
+                    "type": "string"
+                },
+                "name": {
+                    "description": "タスク名",
+                    "type": "string"
+                },
+                "startedAt": {
+                    "description": "開始日時",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.User": {
             "type": "object",
             "properties": {
                 "email": {
@@ -537,43 +586,6 @@
                     "items": {
                         "$ref": "#/definitions/entity.UserOrganization"
                     }
-                }
-            }
-        },
-        "controller.UsersResponse": {
-            "type": "object",
-            "properties": {
-                "users": {
-                    "description": "ユーザリスト",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/controller.UserResponse"
-                    }
-                }
-            }
-        },
-        "entity.ErrorResponse": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string"
-                }
-            }
-        },
-        "entity.Task": {
-            "type": "object",
-            "properties": {
-                "finishedAt": {
-                    "description": "終了日時",
-                    "type": "string"
-                },
-                "name": {
-                    "description": "タスク名",
-                    "type": "string"
-                },
-                "startedAt": {
-                    "description": "開始日時",
-                    "type": "string"
                 }
             }
         },

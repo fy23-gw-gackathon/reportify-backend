@@ -13,22 +13,10 @@ func NewUserController(u UserUseCase) *UserController {
 	return &UserController{u}
 }
 
-// UserResponse - ユーザレスポンス
-type UserResponse struct {
-	// ユーザID
-	Id string `json:"id"`
-	// ユーザ名
-	Name string `json:"name"`
-	// メールアドレス
-	Email string `json:"email"`
-	// 所属する組織リスト
-	Organizations []entity.UserOrganization `json:"organizations"`
-}
-
 // UsersResponse - ユーザリストレスポンス
 type UsersResponse struct {
 	// ユーザリスト
-	Users []UserResponse `json:"users"`
+	Users []entity.User `json:"users"`
 }
 
 // GetUsers godoc

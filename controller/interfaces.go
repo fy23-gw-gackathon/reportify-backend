@@ -10,3 +10,5 @@ type UserUseCase interface{}
 type OrganizationUseCase interface {
 	GetOrganizations(ctx context.Context, limit *int, offset *int) ([]*entity.Organization, error)
 }
+
+type ReportUseCase interface{}

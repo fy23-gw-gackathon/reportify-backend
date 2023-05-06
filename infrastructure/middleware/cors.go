@@ -3,11 +3,12 @@ package middleware
 import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"reportify-backend/config"
 )
 
-func Cors() gin.HandlerFunc {
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"http://localhost:3000"}
-	config.AllowCredentials = true
-	return cors.New(config)
+func Cors(cfg config.Config) gin.HandlerFunc {
+	conf := cors.DefaultConfig()
+	conf.AllowOrigins = cfg.AllowOrigins
+	conf.AllowCredentials = true
+	return cors.New(conf)
 }

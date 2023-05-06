@@ -1,8 +1,8 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
+	"net/http"
 	"reportify-backend/entity"
 )
 
@@ -36,7 +36,7 @@ type UpdateOrganizationRequest struct {
 // OrganizationsResponse - 組織リストレスポンス
 type OrganizationsResponse struct {
 	// 組織リスト
-	Organizations []entity.Organization `json:"organizations"`
+	Organizations []*entity.Organization `json:"organizations"`
 }
 
 // GetOrganizations godoc
@@ -50,7 +50,10 @@ type OrganizationsResponse struct {
 // @Failure     401 {object} entity.ErrorResponse  "Unauthorized"
 // @Router      /organizations [get]
 func (c *OrganizationController) GetOrganizations(ctx *gin.Context) (interface{}, error) {
-	panic("not implemented")
+	userID, _ := ctx.Get(entity.ContextKeyUserID)
+	id := userID.(string)
+	o, err := c.OrganizationUseCase.GetOrganizations(ctx, id)
+	return OrganizationsResponse{Organizations: o}, err
 }
 
 // GetOrganization godoc
@@ -66,9 +69,10 @@ func (c *OrganizationController) GetOrganizations(ctx *gin.Context) (interface{}
 // @Failure 404              {object} entity.ErrorResponse      "Not Found"
 // @Router  /organizations/{organizationCode} [get]
 func (c *OrganizationController) GetOrganization(ctx *gin.Context) (interface{}, error) {
+	userID, _ := ctx.Get(entity.ContextKeyUserID)
+	id := userID.(string)
 	code := ctx.Params.ByName("organizationCode")
-	fmt.Println(code)
-	panic("not implemented")
+	return c.OrganizationUseCase.GetOrganization(ctx, code, id)
 }
 
 // UpdateOrganization godoc
@@ -86,7 +90,12 @@ func (c *OrganizationController) GetOrganization(ctx *gin.Context) (interface{},
 // @Failure 409              {object} entity.ErrorResponse      "Conflict"
 // @Router  /organizations/{organizationCode} [put]
 func (c *OrganizationController) UpdateOrganization(ctx *gin.Context) (interface{}, error) {
+	var req UpdateOrganizationRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		return nil, entity.NewError(http.StatusBadRequest, err)
+	}
+	userID, _ := ctx.Get(entity.ContextKeyUserID)
+	id := userID.(string)
 	code := ctx.Params.ByName("organizationCode")
-	fmt.Println(code)
-	panic("not implemented")
+	return c.OrganizationUseCase.UpdateOrganization(ctx, code, id, req.Name, req.Code, req.Mission, req.Vision, req.Value)
 }

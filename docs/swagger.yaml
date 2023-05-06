@@ -10,6 +10,12 @@ definitions:
           $ref: '#/definitions/entity.Task'
         type: array
     type: object
+  controller.InviteUserRequest:
+    properties:
+      email:
+        description: メールアドレス
+        type: string
+    type: object
   controller.OrganizationsResponse:
     properties:
       organizations:
@@ -403,4 +409,73 @@ paths:
       summary: 組織のユーザリスト取得API
       tags:
       - User
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 組織コード
+        in: path
+        name: organizationCode
+        required: true
+        type: string
+      - description: メンバー招待リクエスト
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.InviteUserRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: BadRequest
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: メンバー招待API
+      tags:
+      - User
+  /users/me:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: ログインユーザー取得API
+      tags:
+      - User
+securityDefinitions:
+  Bearer:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

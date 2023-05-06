@@ -9,6 +9,7 @@ import (
 )
 
 const TxKey = "transactionKey"
+const ErrDuplicateEntryNumber = 1062
 
 func NewDB(cfg config.Config) *gorm.DB {
 	db, err := gorm.Open(mysql.Open(cfg.Database.Url), &gorm.Config{})

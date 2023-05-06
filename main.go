@@ -17,17 +17,22 @@ import (
 	"reportify-backend/usecase"
 )
 
+// @securityDefinitions.apikey Bearer
+// @in                         header
+// @name                       Authorization
+// @description                Type "Bearer" followed by a space and JWT token.
+// @Security                   Bearer
 func main() {
 	// Dependency Injection
 	cfg := config.Load()
-
 	db := driver.NewDB(cfg)
+	cognitoClient := driver.NewCognitoClient(cfg)
 
-	userPersistence := persistence.NewUserPersistence()
+	userPersistence := persistence.NewUserPersistence(cognitoClient)
 	organizationPersistence := persistence.NewOrganizationPersistence()
 
-	userUseCase := usecase.NewUserUseCase(userPersistence)
-	organizationUseCase := usecase.NewOrganizationUseCase(organizationPersistence)
+	userUseCase := usecase.NewUserUseCase(userPersistence, organizationPersistence)
+	organizationUseCase := usecase.NewOrganizationUseCase(organizationPersistence, userPersistence)
 
 	userController := controller.NewUserController(userUseCase)
 	organizationController := controller.NewOrganizationController(organizationUseCase)
@@ -41,9 +46,10 @@ func main() {
 	app.GET("/", func(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "It works")
 	})
-	app.GET("/organizations", handleResponse(organizationController.GetOrganizations))
-
-	org := app.Group("/organizations/:organizationCode")
+	orgs := app.Group("/organizations")
+	orgs.Use(middleware.Authentication(userPersistence))
+	orgs.GET("/", handleResponse(organizationController.GetOrganizations))
+	org := orgs.Group("/:organizationCode")
 	org.GET("/", handleResponse(organizationController.GetOrganization))
 	org.PUT("/", handleResponse(organizationController.UpdateOrganization))
 
@@ -52,6 +58,9 @@ func main() {
 	org.GET("/reports/:reportId", handleResponse(reportController.GetReport))
 
 	org.GET("/users", handleResponse(userController.GetUsers))
+	org.POST("/users", handleResponse(userController.InviteUser))
+
+	app.GET("/users/me", handleResponse(userController.GetMe))
 
 	runApp(app, cfg.App.Port)
 }
@@ -60,7 +69,7 @@ func runApp(app *gin.Engine, port int) {
 	docs.SwaggerInfo.Title = "Reportify"
 	docs.SwaggerInfo.Description = "Reportify"
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = fmt.Sprintf("localhost:%s", port)
+	docs.SwaggerInfo.Host = fmt.Sprintf("localhost:%d", port)
 	docs.SwaggerInfo.BasePath = "/"
 	docs.SwaggerInfo.Schemes = []string{"http"}
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

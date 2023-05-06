@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS r_organization_users;
 DROP TABLE IF EXISTS report_tasks;
 
 CREATE TABLE IF NOT EXISTS users (
-    id VARCHAR(36) NOT NULL,
+    id VARCHAR(26) NOT NULL,
     cognito_id VARCHAR(36) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) UNIQUE NOT NULL,
@@ -15,9 +15,9 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS organizations (
-    id VARCHAR(36) NOT NULL,
+    id VARCHAR(26) NOT NULL,
     name VARCHAR(255) NOT NULL,
-    code VARCHAR(255) NOT NULL,
+    code VARCHAR(255) UNIQUE NOT NULL,
     mission TEXT NOT NULL,
     vision TEXT NOT NULL,
     value TEXT NOT NULL,
@@ -27,8 +27,8 @@ CREATE TABLE IF NOT EXISTS organizations (
 );
 
 CREATE TABLE IF NOT EXISTS reports (
-    id VARCHAR(36) NOT NULL,
-    user_id VARCHAR(36) NOT NULL,
+    id VARCHAR(26) NOT NULL,
+    user_id VARCHAR(26) NOT NULL,
     body TEXT NOT NULL,
     review_body TEXT NOT NULL,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -38,8 +38,8 @@ CREATE TABLE IF NOT EXISTS reports (
 );
 
 CREATE TABLE IF NOT EXISTS r_organization_users (
-    user_id VARCHAR(36) NOT NULL,
-    organization_id VARCHAR(36) NOT NULL,
+    user_id VARCHAR(26) NOT NULL,
+    organization_id VARCHAR(26) NOT NULL,
     role TINYINT(1) NOT NULL,
     PRIMARY KEY (user_id, organization_id),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -47,8 +47,8 @@ CREATE TABLE IF NOT EXISTS r_organization_users (
 );
 
 CREATE TABLE IF NOT EXISTS report_tasks (
-    id VARCHAR(36) NOT NULL,
-    report_id VARCHAR(36) NOT NULL,
+    id VARCHAR(26) NOT NULL,
+    report_id VARCHAR(26) NOT NULL,
     started_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     finished_at TIMESTAMP NULL DEFAULT NULL,
     PRIMARY KEY (id),

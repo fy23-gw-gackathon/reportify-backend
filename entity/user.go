@@ -1,5 +1,13 @@
 package entity
 
+const ContextKeyUserID = "userID"
+
+type OrganizationUser struct {
+	UserID         string `json:"userId"`
+	OrganizationID string `json:"organizationId"`
+	IsAdmin        bool   `json:"isAdmin"`
+}
+
 type User struct {
 	// ユーザID
 	ID string `json:"id"`

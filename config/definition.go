@@ -11,11 +11,17 @@ type Config struct {
 	App          `yaml:"app"`
 	OpenAI       `yaml:"openAI"`
 	AllowOrigins []string `yaml:"allowOrigins"`
+	Cognito      `yaml:"cognito"`
 }
 
 type App struct {
 	Env  string `yaml:"env"`
 	Port int    `yaml:"port"`
+}
+
+type Cognito struct {
+	ClientID   string `yaml:"clientID"`
+	UserPoolID string `yaml:"userPoolID"`
 }
 
 type Database struct {

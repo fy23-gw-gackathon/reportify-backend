@@ -7,3 +7,6 @@ allowOrigins:
   - "http://localhost:3000"
 openAI:
   token: ""
+cognito:
+  userPoolID: ""
+  clientID: ""

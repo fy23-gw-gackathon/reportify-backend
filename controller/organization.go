@@ -49,6 +49,7 @@ type OrganizationsResponse struct {
 // @Failure     400 {object} entity.ErrorResponse  "BadRequest"
 // @Failure     401 {object} entity.ErrorResponse  "Unauthorized"
 // @Router      /organizations [get]
+// @Security    Bearer
 func (c *OrganizationController) GetOrganizations(ctx *gin.Context) (interface{}, error) {
 	userID, _ := ctx.Get(entity.ContextKeyUserID)
 	id := userID.(string)
@@ -57,17 +58,18 @@ func (c *OrganizationController) GetOrganizations(ctx *gin.Context) (interface{}
 }
 
 // GetOrganization godoc
-// @Summary 組織取得API
-// @Tags    Organization
-// @Accept  json
-// @Produce json
-// @Param   organizationCode path     string               true "組織コード"
-// @Success 200              {object} entity.Organization  "OK"
-// @Failure 400              {object} entity.ErrorResponse      "BadRequest"
-// @Failure 401              {object} entity.ErrorResponse      "Unauthorized"
-// @Failure 403              {object} entity.ErrorResponse      "Forbidden"
-// @Failure 404              {object} entity.ErrorResponse      "Not Found"
-// @Router  /organizations/{organizationCode} [get]
+// @Summary  組織取得API
+// @Tags     Organization
+// @Accept   json
+// @Produce  json
+// @Param    organizationCode path     string               true "組織コード"
+// @Success  200              {object} entity.Organization  "OK"
+// @Failure  400              {object} entity.ErrorResponse "BadRequest"
+// @Failure  401              {object} entity.ErrorResponse "Unauthorized"
+// @Failure  403              {object} entity.ErrorResponse "Forbidden"
+// @Failure  404              {object} entity.ErrorResponse "Not Found"
+// @Router   /organizations/{organizationCode} [get]
+// @Security Bearer
 func (c *OrganizationController) GetOrganization(ctx *gin.Context) (interface{}, error) {
 	userID, _ := ctx.Get(entity.ContextKeyUserID)
 	id := userID.(string)
@@ -76,19 +78,20 @@ func (c *OrganizationController) GetOrganization(ctx *gin.Context) (interface{},
 }
 
 // UpdateOrganization godoc
-// @Summary 組織更新API
-// @Tags    Organization
-// @Accept  json
-// @Produce json
-// @Param   organizationCode path     string                    true "組織コード"
-// @Param   request          body     UpdateOrganizationRequest true "組織更新リクエスト"
-// @Success 200              {object} entity.Organization       "OK"
-// @Failure 400              {object} entity.ErrorResponse "BadRequest"
-// @Failure 401              {object} entity.ErrorResponse "Unauthorized"
-// @Failure 403              {object} entity.ErrorResponse "Forbidden"
-// @Failure 404              {object} entity.ErrorResponse "Not Found"
-// @Failure 409              {object} entity.ErrorResponse      "Conflict"
-// @Router  /organizations/{organizationCode} [put]
+// @Summary  組織更新API
+// @Tags     Organization
+// @Accept   json
+// @Produce  json
+// @Param    organizationCode path     string                    true "組織コード"
+// @Param    request          body     UpdateOrganizationRequest true "組織更新リクエスト"
+// @Success  200              {object} entity.Organization       "OK"
+// @Failure  400              {object} entity.ErrorResponse      "BadRequest"
+// @Failure  401              {object} entity.ErrorResponse      "Unauthorized"
+// @Failure  403              {object} entity.ErrorResponse      "Forbidden"
+// @Failure  404              {object} entity.ErrorResponse      "Not Found"
+// @Failure  409              {object} entity.ErrorResponse      "Conflict"
+// @Router   /organizations/{organizationCode} [put]
+// @Security Bearer
 func (c *OrganizationController) UpdateOrganization(ctx *gin.Context) (interface{}, error) {
 	var req UpdateOrganizationRequest
 	if err := ctx.ShouldBindJSON(&req); err != nil {

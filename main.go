@@ -21,7 +21,6 @@ import (
 // @in                         header
 // @name                       Authorization
 // @description                Type "Bearer" followed by a space and JWT token.
-// @Security                   Bearer
 func main() {
 	// Dependency Injection
 	cfg := config.Load()

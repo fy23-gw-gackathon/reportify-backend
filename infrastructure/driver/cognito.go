@@ -30,9 +30,9 @@ func NewCognitoClient(conf config.Config) *CognitoClient {
 }
 
 type CognitoUser struct {
-	ID       string `json:"custom:id"`
-	Email    string `json:"email"`
-	Username string `json:"cognito:username"`
+	ID     string `json:"cognito:username"`
+	UserID string `json:"custom:id"`
+	Email  string `json:"email"`
 }
 
 func (c *CognitoClient) GetUserFromToken(ctx context.Context, idToken string) (CognitoUser, error) {
@@ -64,16 +64,12 @@ func (c *CognitoClient) GetUserFromToken(ctx context.Context, idToken string) (C
 	return user, nil
 }
 
-func (c *CognitoClient) CreateUser(ctx context.Context, userID, userName, email string) (CognitoUser, error) {
+func (c *CognitoClient) CreateUser(ctx context.Context, userID, email string) (CognitoUser, error) {
 	output, err := c.Client.AdminCreateUser(ctx, &cognitoidentityprovider.AdminCreateUserInput{
 		UserPoolId:             aws.String(c.Config.Cognito.UserPoolID),
-		Username:               aws.String(userName),
+		Username:               aws.String(email),
 		DesiredDeliveryMediums: []types.DeliveryMediumType{types.DeliveryMediumTypeEmail},
 		UserAttributes: []types.AttributeType{
-			{
-				Name:  aws.String("email"),
-				Value: aws.String(email),
-			},
 			{
 				Name:  aws.String("custom:id"),
 				Value: aws.String(userID),
@@ -86,8 +82,8 @@ func (c *CognitoClient) CreateUser(ctx context.Context, userID, userName, email 
 	}
 
 	return CognitoUser{
-		Username: *output.User.Username,
-		Email:    email,
-		ID:       userID,
+		ID:     *output.User.Username,
+		Email:  email,
+		UserID: userID,
 	}, nil
 }

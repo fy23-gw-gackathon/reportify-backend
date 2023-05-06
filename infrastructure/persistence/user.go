@@ -95,7 +95,7 @@ func (p UserPersistence) CreateUser(ctx context.Context, email, organizationID s
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			userID := generateID().String()
 			// CognitoID取得
-			cognitoUser, err := p.CognitoClient.CreateUser(ctx, userID, userName, email)
+			cognitoUser, err := p.CognitoClient.CreateUser(ctx, userID, email)
 			if err != nil {
 				return nil, entity.NewError(http.StatusInternalServerError, err)
 			}

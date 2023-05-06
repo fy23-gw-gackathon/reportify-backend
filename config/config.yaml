@@ -8,5 +8,5 @@ allowOrigins:
 openAI:
   token: ""
 cognito:
-  userPoolID: ""
+  userPoolID: "ap-northeast-1_EAP0uZ7mB"
   clientID: ""

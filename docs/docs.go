@@ -18,6 +18,11 @@ const docTemplate = `{
     "paths": {
         "/organizations": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "自分が所属する組織のみ取得できる",
                 "consumes": [
                     "application/json"
@@ -53,6 +58,11 @@ const docTemplate = `{
         },
         "/organizations/{organizationCode}": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -106,6 +116,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -176,6 +191,11 @@ const docTemplate = `{
         },
         "/organizations/{organizationCode}/reports": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -236,6 +256,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -298,6 +323,11 @@ const docTemplate = `{
         },
         "/organizations/{organizationCode}/reports/{reportId}": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -361,6 +391,11 @@ const docTemplate = `{
         },
         "/organizations/{organizationCode}/users": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -408,6 +443,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -472,6 +512,11 @@ const docTemplate = `{
         },
         "/users/me": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],

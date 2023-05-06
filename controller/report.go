@@ -27,18 +27,19 @@ type ReportsResponse struct {
 }
 
 // GetReports godoc
-// @Summary 日報リスト取得API
-// @Tags    Report
-// @Accept  json
-// @Produce json
-// @Param   userId           query    string               true "ユーザID"
-// @Param   organizationCode path     string               true "組織コード"
-// @Success 200              {object} ReportsResponse      "OK"
-// @Failure 400              {object} entity.ErrorResponse "BadRequest"
-// @Failure 401              {object} entity.ErrorResponse "Unauthorized"
-// @Failure 403              {object} entity.ErrorResponse "Forbidden"
-// @Failure 404              {object} entity.ErrorResponse "Not Found"
-// @Router  /organizations/{organizationCode}/reports [get]
+// @Summary  日報リスト取得API
+// @Tags     Report
+// @Accept   json
+// @Produce  json
+// @Param    userId           query    string               true "ユーザID"
+// @Param    organizationCode path     string               true "組織コード"
+// @Success  200              {object} ReportsResponse      "OK"
+// @Failure  400              {object} entity.ErrorResponse "BadRequest"
+// @Failure  401              {object} entity.ErrorResponse "Unauthorized"
+// @Failure  403              {object} entity.ErrorResponse "Forbidden"
+// @Failure  404              {object} entity.ErrorResponse "Not Found"
+// @Router   /organizations/{organizationCode}/reports [get]
+// @Security Bearer
 func (c *ReportController) GetReports(ctx *gin.Context) (interface{}, error) {
 	var query GetReportsQuery
 	if err := ctx.ShouldBindQuery(&query); err != nil {
@@ -54,18 +55,19 @@ func (c *ReportController) GetReports(ctx *gin.Context) (interface{}, error) {
 }
 
 // GetReport godoc
-// @Summary 日報取得API
-// @Tags    Report
-// @Accept  json
-// @Produce json
-// @Param   userId           query    string               true "ユーザID"
-// @Param   organizationCode path     string               true "組織コード"
-// @Param   organizationCode path     string               true "日報ID"
-// @Success 200              {object} entity.Report        "OK"
-// @Failure 401              {object} entity.ErrorResponse "Unauthorized"
-// @Failure 403              {object} entity.ErrorResponse "Forbidden"
-// @Failure 404              {object} entity.ErrorResponse "Not Found"
-// @Router  /organizations/{organizationCode}/reports/{reportId} [get]
+// @Summary  日報取得API
+// @Tags     Report
+// @Accept   json
+// @Produce  json
+// @Param    userId           query    string               true "ユーザID"
+// @Param    organizationCode path     string               true "組織コード"
+// @Param    organizationCode path     string               true "日報ID"
+// @Success  200              {object} entity.Report        "OK"
+// @Failure  401              {object} entity.ErrorResponse "Unauthorized"
+// @Failure  403              {object} entity.ErrorResponse "Forbidden"
+// @Failure  404              {object} entity.ErrorResponse "Not Found"
+// @Router   /organizations/{organizationCode}/reports/{reportId} [get]
+// @Security Bearer
 func (c *ReportController) GetReport(ctx *gin.Context) (interface{}, error) {
 	var req CreateReportRequest
 	if err := ctx.Bind(&req); err != nil {
@@ -86,18 +88,19 @@ type CreateReportRequest struct {
 }
 
 // CreateReport godoc
-// @Summary 日報作成API
-// @Tags    Report
-// @Accept  json
-// @Produce json
-// @Param   userId           query    string               true "ユーザID"
-// @Param   organizationCode path     string               true "組織コード"
-// @Success 201              {object} CreateReportRequest  "Created"
-// @Failure 400              {object} entity.ErrorResponse "BadRequest"
-// @Failure 401              {object} entity.ErrorResponse "Unauthorized"
-// @Failure 403              {object} entity.ErrorResponse "Forbidden"
-// @Failure 404              {object} entity.ErrorResponse "Not Found"
-// @Router  /organizations/{organizationCode}/reports [post]
+// @Summary  日報作成API
+// @Tags     Report
+// @Accept   json
+// @Produce  json
+// @Param    userId           query    string               true "ユーザID"
+// @Param    organizationCode path     string               true "組織コード"
+// @Success  201              {object} CreateReportRequest  "Created"
+// @Failure  400              {object} entity.ErrorResponse "BadRequest"
+// @Failure  401              {object} entity.ErrorResponse "Unauthorized"
+// @Failure  403              {object} entity.ErrorResponse "Forbidden"
+// @Failure  404              {object} entity.ErrorResponse "Not Found"
+// @Router   /organizations/{organizationCode}/reports [post]
+// @Security Bearer
 func (c *ReportController) CreateReport(ctx *gin.Context) (interface{}, error) {
 	var req CreateReportRequest
 	if err := ctx.Bind(&req); err != nil {

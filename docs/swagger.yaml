@@ -170,6 +170,8 @@ paths:
           description: Unauthorized
           schema:
             $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
       summary: 組織リスト取得API
       tags:
       - Organization
@@ -206,6 +208,8 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
       summary: 組織取得API
       tags:
       - Organization
@@ -251,6 +255,8 @@ paths:
           description: Conflict
           schema:
             $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
       summary: 組織更新API
       tags:
       - Organization
@@ -292,6 +298,8 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
       summary: 日報リスト取得API
       tags:
       - Report
@@ -332,6 +340,8 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
       summary: 日報作成API
       tags:
       - Report
@@ -374,6 +384,8 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
       summary: 日報取得API
       tags:
       - Report
@@ -406,6 +418,8 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
       summary: 組織のユーザリスト取得API
       tags:
       - User
@@ -447,6 +461,8 @@ paths:
           description: Conflict
           schema:
             $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
       summary: メンバー招待API
       tags:
       - User
@@ -469,6 +485,8 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
       summary: ログインユーザー取得API
       tags:
       - User

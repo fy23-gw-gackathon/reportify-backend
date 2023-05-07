@@ -79,7 +79,7 @@ func (c *ReportController) GetReports(ctx *gin.Context) (interface{}, error) {
 // @Accept   json
 // @Produce  json
 // @Param    organizationCode path     string               true "組織コード"
-// @Param   reportId path string              true "日報ID"
+// @Param   reportId path string                     true "日報ID"
 // @Success  200              {object} ReportResponse       "OK"
 // @Failure  401              {object} entity.ErrorResponse "Unauthorized"
 // @Failure  403              {object} entity.ErrorResponse "Forbidden"

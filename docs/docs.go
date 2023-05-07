@@ -524,7 +524,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/controller.ReviewReportRequest"
+                            "$ref": "#/definitions/entity.ReviewReportRequest"
                         }
                     }
                 ],
@@ -667,14 +667,6 @@ const docTemplate = `{
                 }
             }
         },
-        "controller.ReviewReportRequest": {
-            "type": "object",
-            "properties": {
-                "reviewBody": {
-                    "type": "string"
-                }
-            }
-        },
         "controller.UpdateOrganizationRequest": {
             "type": "object",
             "properties": {
@@ -753,6 +745,14 @@ const docTemplate = `{
                 },
                 "name": {
                     "description": "組織名",
+                    "type": "string"
+                }
+            }
+        },
+        "entity.ReviewReportRequest": {
+            "type": "object",
+            "properties": {
+                "reviewBody": {
                     "type": "string"
                 }
             }

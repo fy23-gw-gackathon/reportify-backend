@@ -59,11 +59,6 @@ definitions:
           $ref: '#/definitions/controller.ReportResponse'
         type: array
     type: object
-  controller.ReviewReportRequest:
-    properties:
-      reviewBody:
-        type: string
-    type: object
   controller.UpdateOrganizationRequest:
     properties:
       code:
@@ -119,6 +114,11 @@ definitions:
         $ref: '#/definitions/entity.Mvv'
       name:
         description: 組織名
+        type: string
+    type: object
+  entity.ReviewReportRequest:
+    properties:
+      reviewBody:
         type: string
     type: object
   entity.Task:
@@ -488,7 +488,7 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/controller.ReviewReportRequest'
+          $ref: '#/definitions/entity.ReviewReportRequest'
       produces:
       - application/json
       responses:

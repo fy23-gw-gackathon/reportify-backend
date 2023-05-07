@@ -8,7 +8,7 @@ app:
 allowOrigins:
   - "http://localhost:3000"
 openAI:
-  token: ""
+  key: ""
 cognito:
   userPoolID: "ap-northeast-1_EAP0uZ7mB"
   clientID: ""

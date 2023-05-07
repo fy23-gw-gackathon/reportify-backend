@@ -34,7 +34,7 @@ type Database struct {
 }
 
 type OpenAI struct {
-	Token string `yaml:"token"`
+	Key string `yaml:"key"`
 }
 
 func Load() Config {

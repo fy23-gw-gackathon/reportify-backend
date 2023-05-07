@@ -12,6 +12,7 @@ require (
 	github.com/golang-jwt/jwt/v4 v4.5.0
 	github.com/oklog/ulid v1.3.1
 	github.com/redis/go-redis/v9 v9.0.4
+	github.com/sashabaranov/go-openai v1.9.3
 	github.com/spf13/viper v1.15.0
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.0

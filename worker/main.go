@@ -16,13 +16,14 @@ func main() {
 	cfg := config.Load()
 	rdb := driver.NewRedisClient(cfg.Datastore.Address)
 	client := driver.NewHttp()
+	gpt := driver.NewGptDriver(cfg)
 
 	pubSub := rdb.Subscribe(context.Background(), driver.JobQueueKey)
 	defer pubSub.Close()
 
 	ch := pubSub.Channel()
 	for msg := range ch {
-		log.Println(handler(msg, client))
+		log.Println(handler(msg, client, gpt))
 	}
 	os.Exit(0)
 }
@@ -36,12 +37,15 @@ func getMessage(payload string) *entity.PubSubMessage {
 	return msg
 }
 
-func handler(msg *redis.Message, client *driver.Http) error {
+func handler(msg *redis.Message, client *driver.Http, gpt *driver.GptDriver) error {
 	m := getMessage(msg.Payload)
 
-	// TODO: ChatGPTの処理を書く
-
-	d, err := json.Marshal(entity.ReviewReportRequest{ReviewBody: m.Body})
+	resp, err := gpt.RequestMessage(fmt.Sprintf(driver.ReportSystemPromptTemplate, m.Mission, m.Vision, m.Value), m.Body)
+	if err != nil {
+		return err
+	}
+	fmt.Println(resp.Choices[0].Message.Content)
+	d, err := json.Marshal(entity.ReviewReportRequest{ReviewBody: resp.Choices[0].Message.Content})
 	if err != nil {
 		return err
 	}

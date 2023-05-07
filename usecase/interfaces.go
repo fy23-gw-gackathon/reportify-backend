@@ -1,8 +1,8 @@
 package usecase
 
 import (
+	"github.com/fy23-gw-gackathon/reportify-backend/entity"
 	"golang.org/x/net/context"
-	"reportify-backend/entity"
 )
 
 type UserRepo interface {
@@ -20,7 +20,9 @@ type OrganizationRepo interface {
 }
 
 type ReportRepo interface {
-	GetReport(ctx context.Context, organizationID, reportID string) (*entity.Report, error)
+	GetReport(ctx context.Context, organizationID *string, reportID string) (*entity.Report, error)
 	GetReports(ctx context.Context, organizationID string) ([]*entity.Report, error)
 	CreateReport(ctx context.Context, organizationID, userID string, body string, task []entity.Task) (*entity.Report, error)
+	UpdateReviewBody(ctx context.Context, reportID string, reviewBody string) error
+	DispatchReport(ctx context.Context, reportID, body string) error
 }

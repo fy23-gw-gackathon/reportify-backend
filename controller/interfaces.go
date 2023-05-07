@@ -1,8 +1,8 @@
 package controller
 
 import (
+	"github.com/fy23-gw-gackathon/reportify-backend/entity"
 	"golang.org/x/net/context"
-	"reportify-backend/entity"
 )
 
 type UserUseCase interface {
@@ -21,4 +21,5 @@ type ReportUseCase interface {
 	GetReport(ctx context.Context, organizationID, reportID string) (*entity.Report, error)
 	GetReports(ctx context.Context, organizationID string) ([]*entity.Report, error)
 	CreateReport(ctx context.Context, organizationID, userID, body string, task []entity.Task) (*entity.Report, error)
+	ReviewReport(ctx context.Context, reportId, reviewBody string) error
 }

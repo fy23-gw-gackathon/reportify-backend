@@ -1,8 +1,16 @@
 {
+    "schemes": [
+        "http"
+    ],
     "swagger": "2.0",
     "info": {
-        "contact": {}
+        "description": "Reportify",
+        "title": "Reportify",
+        "contact": {},
+        "version": "1.0"
     },
+    "host": "localhost:8080",
+    "basePath": "/",
     "paths": {
         "/organizations": {
             "get": {
@@ -486,6 +494,49 @@
                 }
             }
         },
+        "/reports/{reportId}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "summary": "バッチ処理用の日報レビューAPI",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "日報ID",
+                        "name": "reportId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "日報レビューリクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.ReviewReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/me": {
             "get": {
                 "security": [
@@ -609,6 +660,14 @@
                     "items": {
                         "$ref": "#/definitions/controller.ReportResponse"
                     }
+                }
+            }
+        },
+        "controller.ReviewReportRequest": {
+            "type": "object",
+            "properties": {
+                "reviewBody": {
+                    "type": "string"
                 }
             }
         },

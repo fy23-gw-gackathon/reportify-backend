@@ -1,9 +1,9 @@
 package controller
 
 import (
+	"github.com/fy23-gw-gackathon/reportify-backend/entity"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"reportify-backend/entity"
 	"time"
 )
 
@@ -40,15 +40,15 @@ type ReportResponse struct {
 
 // GetReports godoc
 // @Summary  日報リスト取得API
-// @Tags     Report
-// @Accept   json
-// @Produce  json
+// @Tags    Report
+// @Accept  json
+// @Produce json
 // @Param    organizationCode path     string               true "組織コード"
 // @Success  200              {object} ReportsResponse      "OK"
 // @Failure  400              {object} entity.ErrorResponse "BadRequest"
 // @Failure  401              {object} entity.ErrorResponse "Unauthorized"
 // @Failure  403              {object} entity.ErrorResponse "Forbidden"
-// @Failure  404              {object} entity.ErrorResponse "Not Found"
+// @Failure 404      {object} entity.ErrorResponse "Not Found"
 // @Router   /organizations/{organizationCode}/reports [get]
 // @Security Bearer
 func (c *ReportController) GetReports(ctx *gin.Context) (interface{}, error) {
@@ -79,7 +79,7 @@ func (c *ReportController) GetReports(ctx *gin.Context) (interface{}, error) {
 // @Accept   json
 // @Produce  json
 // @Param    organizationCode path     string               true "組織コード"
-// @Param    reportId         path     string               true "日報ID"
+// @Param   reportId path string              true "日報ID"
 // @Success  200              {object} ReportResponse       "OK"
 // @Failure  401              {object} entity.ErrorResponse "Unauthorized"
 // @Failure  403              {object} entity.ErrorResponse "Forbidden"
@@ -142,4 +142,27 @@ func (c *ReportController) CreateReport(ctx *gin.Context) (interface{}, error) {
 		Body:  report.Body,
 		Tasks: report.Tasks,
 	}, nil
+}
+
+type ReviewReportRequest struct {
+	ReviewBody string `json:"reviewBody"`
+}
+
+// ReviewReport godoc
+// @Summary バッチ処理用の日報レビューAPI
+// @Tags     Report
+// @Accept   json
+// @Produce  json
+// @Param    reportId         path     string               true "日報ID"
+// @Param   request  body ReviewReportRequest true "日報レビューリクエスト"
+// @Success 204      "No Content"
+// @Failure  404              {object} entity.ErrorResponse "Not Found"
+// @Router  /reports/{reportId} [put]
+func (c *ReportController) ReviewReport(ctx *gin.Context) (interface{}, error) {
+	var req ReviewReportRequest
+	if err := ctx.Bind(&req); err != nil {
+		return nil, entity.NewError(http.StatusBadRequest, err)
+	}
+	reportID := ctx.Params.ByName("reportId")
+	return nil, c.ReportUseCase.ReviewReport(ctx, reportID, req.ReviewBody)
 }

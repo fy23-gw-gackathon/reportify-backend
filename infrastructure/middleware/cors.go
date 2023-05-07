@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"github.com/fy23-gw-gackathon/reportify-backend/config"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"reportify-backend/config"
 )
 
 func Cors(cfg config.Config) gin.HandlerFunc {

@@ -1,3 +1,4 @@
+basePath: /
 definitions:
   controller.CreateReportRequest:
     properties:
@@ -57,6 +58,11 @@ definitions:
         items:
           $ref: '#/definitions/controller.ReportResponse'
         type: array
+    type: object
+  controller.ReviewReportRequest:
+    properties:
+      reviewBody:
+        type: string
     type: object
   controller.UpdateOrganizationRequest:
     properties:
@@ -153,8 +159,12 @@ definitions:
         description: ロール
         type: boolean
     type: object
+host: localhost:8080
 info:
   contact: {}
+  description: Reportify
+  title: Reportify
+  version: "1.0"
 paths:
   /organizations:
     get:
@@ -463,6 +473,34 @@ paths:
       summary: メンバー招待API
       tags:
       - User
+  /reports/{reportId}:
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 日報ID
+        in: path
+        name: reportId
+        required: true
+        type: string
+      - description: 日報レビューリクエスト
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.ReviewReportRequest'
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      summary: バッチ処理用の日報レビューAPI
+      tags:
+      - Report
   /users/me:
     get:
       consumes:
@@ -487,6 +525,8 @@ paths:
       summary: ログインユーザー取得API
       tags:
       - User
+schemes:
+- http
 securityDefinitions:
   Bearer:
     description: Type "Bearer" followed by a space and JWT token.

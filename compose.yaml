@@ -13,11 +13,14 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      redis:
+        condition: service_healthy
     env_file:
       - .env
     environment:
       AWS_SDK_LOAD_CONFIG: "true"
       DATABASE_URL: "db:db@tcp(db:3306)/db?charset=utf8&parseTime=true"
+      DATASTORE_ADDRESS: "redis:6379"
       TZ: Asia/Tokyo
   db:
     image: mysql:8.0
@@ -38,5 +41,35 @@ services:
       - ./data/init:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"
+  redis:
+    image: redis:alpine
+    container_name: redis
+    command: ["redis-server", "/usl/local/etc/redis/redis.conf"]
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping", "|", "grep", "PONG" ]
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    volumes:
+      - ./data/redis/redis.conf:/usl/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+  worker:
+    container_name: worker
+    build:
+      context: .
+      dockerfile: worker/Dockerfile
+    volumes:
+      - .:/app
+    depends_on:
+      redis:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      DATASTORE_ADDRESS: "redis:6379"
+      TZ: Asia/Tokyo
+    ports:
+      - "8081:8081"
     
   

@@ -1,11 +1,11 @@
 package middleware
 
 import (
+	"github.com/fy23-gw-gackathon/reportify-backend/config"
+	"github.com/fy23-gw-gackathon/reportify-backend/entity"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/net/context"
 	"net/http"
-	"reportify-backend/config"
-	"reportify-backend/entity"
 	"strings"
 )
 

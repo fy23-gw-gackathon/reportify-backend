@@ -8,10 +8,15 @@ import (
 
 type Config struct {
 	Database     `yaml:"database"`
+	Datastore    `yaml:"datastore"`
 	App          `yaml:"app"`
 	OpenAI       `yaml:"openAI"`
 	AllowOrigins []string `yaml:"allowOrigins"`
 	Cognito      `yaml:"cognito"`
+}
+
+type Datastore struct {
+	Address string `yaml:"address"`
 }
 
 type App struct {

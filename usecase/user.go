@@ -1,9 +1,7 @@
 package usecase
 
 import (
-	"errors"
 	"golang.org/x/net/context"
-	"net/http"
 	"reportify-backend/entity"
 )
 
@@ -16,33 +14,21 @@ func NewUserUseCase(userRepo UserRepo, orgRepo OrganizationRepo) *UserUseCase {
 	return &UserUseCase{userRepo, orgRepo}
 }
 
-func (u UserUseCase) GetUser(ctx context.Context, userID string) (*entity.User, error) {
-	return u.UserRepo.GetUser(ctx, userID)
-}
-
-func (u UserUseCase) GetUsers(ctx context.Context, organizationCode string) ([]*entity.User, error) {
-	return u.UserRepo.GetUsers(ctx, organizationCode)
-}
-
-func (u UserUseCase) InviteUser(ctx context.Context, email, organizationCode, userID string) (*entity.User, error) {
-	ou, err := u.UserRepo.GetOrganizationUserRole(ctx, organizationCode, nil, &email)
+func (u UserUseCase) GetUserFromToken(ctx context.Context, token string) (*entity.User, error) {
+	userID, err := u.UserRepo.GetUserIDFromToken(ctx, token)
 	if err != nil {
 		return nil, err
 	}
+	return u.UserRepo.GetUser(ctx, *userID)
+}
 
-	// 管理者でない場合はエラー
-	if ou == nil || ou.IsAdmin == false {
-		return nil, entity.NewError(http.StatusForbidden, errors.New("you are not admin"))
-	}
+func (u UserUseCase) GetUsers(ctx context.Context, organizationID string) ([]*entity.User, error) {
+	return u.UserRepo.GetUsers(ctx, organizationID)
+}
 
-	// Organization取得
-	org, err := u.OrganizationRepo.GetOrganization(ctx, organizationCode, userID)
-	if err != nil {
-		return nil, err
-	}
-
+func (u UserUseCase) InviteUser(ctx context.Context, email, organizationID string) (*entity.User, error) {
 	// User作成
-	user, err := u.UserRepo.CreateUser(ctx, email, org.ID)
+	user, err := u.UserRepo.CreateUser(ctx, email, organizationID)
 	if err != nil {
 		return nil, err
 	}

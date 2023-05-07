@@ -1,7 +1,7 @@
 database:
   url: ""
 app:
-  env: ""
+  debug: "false"
   port: 8080
 allowOrigins:
   - "http://localhost:3000"

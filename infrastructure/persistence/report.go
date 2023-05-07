@@ -17,10 +17,10 @@ func NewReportPersistence() *ReportPersistence {
 	return &ReportPersistence{}
 }
 
-func (p ReportPersistence) GetReports(ctx context.Context, organizationCode, userID string) ([]*entity.Report, error) {
+func (p ReportPersistence) GetReports(ctx context.Context, organizationID string) ([]*entity.Report, error) {
 	db, _ := ctx.Value(driver.TxKey).(*gorm.DB)
 	var records []*model.Report
-	if err := db.Preload("User.Organizations", "code = ?", organizationCode).Find(&records).Error; err != nil {
+	if err := db.Preload("User").Where("organization_id = ?", organizationID).Find(&records).Error; err != nil {
 		return nil, err
 	}
 	var reports []*entity.Report
@@ -30,10 +30,10 @@ func (p ReportPersistence) GetReports(ctx context.Context, organizationCode, use
 	return reports, nil
 }
 
-func (p ReportPersistence) GetReport(ctx context.Context, organizationCode, reportID string) (*entity.Report, error) {
+func (p ReportPersistence) GetReport(ctx context.Context, organizationID, reportID string) (*entity.Report, error) {
 	db, _ := ctx.Value(driver.TxKey).(*gorm.DB)
 	var record *model.Report
-	if err := db.Preload("User.Organizations", "code = ?", organizationCode).First(&record, "id = ?", reportID).Error; err != nil {
+	if err := db.Preload("User").First(&record, "id = ? AND organization_id = ?", reportID, organizationID).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return nil, entity.NewError(http.StatusNotFound, err)
 		}

@@ -15,8 +15,8 @@ type Config struct {
 }
 
 type App struct {
-	Env  string `yaml:"env"`
-	Port int    `yaml:"port"`
+	Debug bool `yaml:"debug"`
+	Port  int  `yaml:"port"`
 }
 
 type Cognito struct {

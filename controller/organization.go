@@ -51,9 +51,9 @@ type OrganizationsResponse struct {
 // @Router      /organizations [get]
 // @Security    Bearer
 func (c *OrganizationController) GetOrganizations(ctx *gin.Context) (interface{}, error) {
-	userID, _ := ctx.Get(entity.ContextKeyUserID)
-	id := userID.(string)
-	o, err := c.OrganizationUseCase.GetOrganizations(ctx, id)
+	user, _ := ctx.Get(entity.ContextKeyUser)
+	oUser := user.(*entity.OrganizationUser)
+	o, err := c.OrganizationUseCase.GetOrganizations(ctx, oUser.UserID)
 	return OrganizationsResponse{Organizations: o}, err
 }
 
@@ -71,10 +71,9 @@ func (c *OrganizationController) GetOrganizations(ctx *gin.Context) (interface{}
 // @Router   /organizations/{organizationCode} [get]
 // @Security Bearer
 func (c *OrganizationController) GetOrganization(ctx *gin.Context) (interface{}, error) {
-	userID, _ := ctx.Get(entity.ContextKeyUserID)
-	id := userID.(string)
-	code := ctx.Params.ByName("organizationCode")
-	return c.OrganizationUseCase.GetOrganization(ctx, code, id)
+	user, _ := ctx.Get(entity.ContextKeyUser)
+	oUser := user.(*entity.OrganizationUser)
+	return c.OrganizationUseCase.GetOrganization(ctx, oUser.OrganizationID)
 }
 
 // UpdateOrganization godoc
@@ -97,8 +96,7 @@ func (c *OrganizationController) UpdateOrganization(ctx *gin.Context) (interface
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		return nil, entity.NewError(http.StatusBadRequest, err)
 	}
-	userID, _ := ctx.Get(entity.ContextKeyUserID)
-	id := userID.(string)
-	code := ctx.Params.ByName("organizationCode")
-	return c.OrganizationUseCase.UpdateOrganization(ctx, code, id, req.Name, req.Code, req.Mission, req.Vision, req.Value)
+	user, _ := ctx.Get(entity.ContextKeyUser)
+	oUser := user.(*entity.OrganizationUser)
+	return c.OrganizationUseCase.UpdateOrganization(ctx, oUser.OrganizationID, req.Name, req.Code, req.Mission, req.Vision, req.Value)
 }

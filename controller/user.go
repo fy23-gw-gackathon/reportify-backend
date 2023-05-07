@@ -1,9 +1,11 @@
 package controller
 
 import (
+	"errors"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"reportify-backend/entity"
+	"strings"
 )
 
 type UserController struct {
@@ -33,8 +35,9 @@ type UsersResponse struct {
 // @Router   /organizations/{organizationCode}/users [get]
 // @Security Bearer
 func (c UserController) GetUsers(ctx *gin.Context) (interface{}, error) {
-	code := ctx.Param("organizationCode")
-	users, err := c.UserUseCase.GetUsers(ctx, code)
+	user, _ := ctx.Get(entity.ContextKeyUser)
+	oUser := user.(*entity.OrganizationUser)
+	users, err := c.UserUseCase.GetUsers(ctx, oUser.OrganizationID)
 	return UsersResponse{users}, err
 }
 
@@ -63,10 +66,14 @@ func (c UserController) InviteUser(ctx *gin.Context) (interface{}, error) {
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		return nil, entity.NewError(http.StatusBadRequest, err)
 	}
-	code := ctx.Param("organizationCode")
-	userID, _ := ctx.Get(entity.ContextKeyUserID)
+	user, _ := ctx.Get(entity.ContextKeyUser)
+	oUser := user.(*entity.OrganizationUser)
 
-	return c.UserUseCase.InviteUser(ctx, req.Email, code, userID.(string))
+	if !oUser.IsAdmin {
+		return nil, entity.NewError(http.StatusForbidden, errors.New("you are not admin"))
+	}
+
+	return c.UserUseCase.InviteUser(ctx, req.Email, oUser.OrganizationID)
 }
 
 // GetMe godoc
@@ -80,6 +87,7 @@ func (c UserController) InviteUser(ctx *gin.Context) (interface{}, error) {
 // @Router   /users/me [get]
 // @Security Bearer
 func (c UserController) GetMe(ctx *gin.Context) (interface{}, error) {
-	userID, _ := ctx.Get(entity.ContextKeyUserID)
-	return c.UserUseCase.GetUser(ctx, userID.(string))
+	bearerKey := ctx.Request.Header.Get("authorization")
+	token := strings.Replace(bearerKey, "Bearer ", "", 1)
+	return c.UserUseCase.GetUserFromToken(ctx, token)
 }

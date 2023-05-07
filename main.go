@@ -47,21 +47,21 @@ func main() {
 	app.GET("/", func(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "It works")
 	})
+	app.GET("/users/me", handleResponse(userController.GetMe))
+
 	orgs := app.Group("/organizations")
-	orgs.Use(middleware.Authentication(userPersistence))
+	orgs.Use(middleware.Authentication(userPersistence, cfg))
 	orgs.GET("/", handleResponse(organizationController.GetOrganizations))
 	org := orgs.Group("/:organizationCode")
 	org.GET("/", handleResponse(organizationController.GetOrganization))
 	org.PUT("/", handleResponse(organizationController.UpdateOrganization))
 
 	org.GET("/reports", handleResponse(reportController.GetReports))
-	org.POST("/reports", handleResponse(reportController.CreateReport))
+	org.POST("/reports", handleResponse(reportController.CreateReport, http.StatusCreated))
 	org.GET("/reports/:reportId", handleResponse(reportController.GetReport))
 
 	org.GET("/users", handleResponse(userController.GetUsers))
 	org.POST("/users", handleResponse(userController.InviteUser))
-
-	app.GET("/users/me", handleResponse(userController.GetMe))
 
 	runApp(app, cfg.App.Port)
 }
@@ -79,7 +79,7 @@ func runApp(app *gin.Engine, port int) {
 	app.Run(fmt.Sprintf(":%d", port))
 }
 
-func handleResponse(f func(ctx *gin.Context) (interface{}, error)) gin.HandlerFunc {
+func handleResponse(f func(ctx *gin.Context) (interface{}, error), status ...int) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		result, err := f(c)
 		if err != nil {
@@ -91,7 +91,11 @@ func handleResponse(f func(ctx *gin.Context) (interface{}, error)) gin.HandlerFu
 			}
 			c.Abort()
 		} else {
-			c.JSON(http.StatusOK, result)
+			if len(status) > 0 {
+				c.JSON(status[0], result)
+			} else {
+				c.JSON(http.StatusOK, result)
+			}
 		}
 	}
 }

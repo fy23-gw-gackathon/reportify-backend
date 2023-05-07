@@ -24,12 +24,38 @@ definitions:
           $ref: '#/definitions/entity.Organization'
         type: array
     type: object
+  controller.ReportResponse:
+    properties:
+      body:
+        description: 本文
+        type: string
+      id:
+        description: 日報レスポンス
+        type: string
+      reviewBody:
+        description: レビュー本文
+        type: string
+      tasks:
+        description: 実施したタスクリスト
+        items:
+          $ref: '#/definitions/entity.Task'
+        type: array
+      timestamp:
+        description: 作成日時
+        type: string
+      userId:
+        description: ユーザID
+        type: string
+      userName:
+        description: ユーザ名
+        type: string
+    type: object
   controller.ReportsResponse:
     properties:
       reports:
         description: 日報リスト
         items:
-          $ref: '#/definitions/entity.Report'
+          $ref: '#/definitions/controller.ReportResponse'
         type: array
     type: object
   controller.UpdateOrganizationRequest:
@@ -87,26 +113,6 @@ definitions:
         $ref: '#/definitions/entity.Mvv'
       name:
         description: 組織名
-        type: string
-    type: object
-  entity.Report:
-    properties:
-      body:
-        description: 本文
-        type: string
-      id:
-        description: 日報レスポンス
-        type: string
-      reviewBody:
-        description: レビュー本文
-        type: string
-      tasks:
-        description: 実施したタスクリスト
-        items:
-          $ref: '#/definitions/entity.Task'
-        type: array
-      userId:
-        description: ユーザID
         type: string
     type: object
   entity.Task:
@@ -346,11 +352,6 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: ユーザID
-        in: query
-        name: userId
-        required: true
-        type: string
       - description: 組織コード
         in: path
         name: organizationCode
@@ -367,7 +368,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.Report'
+            $ref: '#/definitions/controller.ReportResponse'
         "401":
           description: Unauthorized
           schema:

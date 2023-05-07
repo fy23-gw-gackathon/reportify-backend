@@ -336,13 +336,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ユーザID",
-                        "name": "userId",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "組織コード",
                         "name": "organizationCode",
                         "in": "path",
@@ -360,7 +353,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Report"
+                            "$ref": "#/definitions/controller.ReportResponse"
                         }
                     },
                     "401": {
@@ -583,6 +576,42 @@ const docTemplate = `{
                 }
             }
         },
+        "controller.ReportResponse": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "description": "本文",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "日報レスポンス",
+                    "type": "string"
+                },
+                "reviewBody": {
+                    "description": "レビュー本文",
+                    "type": "string"
+                },
+                "tasks": {
+                    "description": "実施したタスクリスト",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Task"
+                    }
+                },
+                "timestamp": {
+                    "description": "作成日時",
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "ユーザID",
+                    "type": "string"
+                },
+                "userName": {
+                    "description": "ユーザ名",
+                    "type": "string"
+                }
+            }
+        },
         "controller.ReportsResponse": {
             "type": "object",
             "properties": {
@@ -590,7 +619,7 @@ const docTemplate = `{
                     "description": "日報リスト",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Report"
+                        "$ref": "#/definitions/controller.ReportResponse"
                     }
                 }
             }
@@ -673,34 +702,6 @@ const docTemplate = `{
                 },
                 "name": {
                     "description": "組織名",
-                    "type": "string"
-                }
-            }
-        },
-        "entity.Report": {
-            "type": "object",
-            "properties": {
-                "body": {
-                    "description": "本文",
-                    "type": "string"
-                },
-                "id": {
-                    "description": "日報レスポンス",
-                    "type": "string"
-                },
-                "reviewBody": {
-                    "description": "レビュー本文",
-                    "type": "string"
-                },
-                "tasks": {
-                    "description": "実施したタスクリスト",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Task"
-                    }
-                },
-                "userId": {
-                    "description": "ユーザID",
                     "type": "string"
                 }
             }

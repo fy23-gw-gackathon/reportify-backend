@@ -13,9 +13,10 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
       AWS_SDK_LOAD_CONFIG: "true"
-      APP_ENV: "dev"
       DATABASE_URL: "db:db@tcp(db:3306)/db?charset=utf8&parseTime=true"
       TZ: Asia/Tokyo
   db:

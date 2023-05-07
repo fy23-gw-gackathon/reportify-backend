@@ -32,11 +32,11 @@ func (p UserPersistence) GetUser(ctx context.Context, userID string) (*entity.Us
 	return record.ToEntity(), nil
 }
 
-func (p UserPersistence) GetUsers(ctx context.Context, organizationCode string) ([]*entity.User, error) {
+func (p UserPersistence) GetUsers(ctx context.Context, organizationID string) ([]*entity.User, error) {
 	db, _ := ctx.Value(driver.TxKey).(*gorm.DB)
 	var record *model.Organization
 	if err := db.
-		Where("code = ?", organizationCode).
+		Where("id = ?", organizationID).
 		Preload("Users").
 		Find(&record).Error; err != nil {
 		return nil, err
@@ -48,27 +48,22 @@ func (p UserPersistence) GetUsers(ctx context.Context, organizationCode string) 
 	return users, nil
 }
 
-func (p UserPersistence) GetOrganizationUserRole(ctx context.Context, organizationCode string, userID, email *string) (*entity.OrganizationUser, error) {
+func (p UserPersistence) GetOrganizationUser(ctx context.Context, organizationCode string, userID string) (*entity.OrganizationUser, error) {
 	db, _ := ctx.Value(driver.TxKey).(*gorm.DB)
 	var record *model.OrganizationUser
-	if email == nil && userID == nil {
-		return nil, entity.NewError(http.StatusNotFound, errors.New("email or userID must be provided"))
-	}
-	if email != nil {
-		db = db.Preload("User", "email = ?", *email)
-	}
-	if userID != nil {
-		db = db.Preload("User", "id = ?", *userID)
-	}
-	if err := db.Preload("Organization", "code = ?", organizationCode).First(&record).Error; err != nil {
+	if err := db.Preload("User", "id = ?", userID).Preload("Organization", "code = ?", organizationCode).First(&record).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, entity.NewError(http.StatusNotFound, err)
 		}
 		return nil, err
 	}
+	if record.Organization == nil {
+		return nil, entity.NewError(http.StatusNotFound, errors.New("organization not found"))
+	}
 	return &entity.OrganizationUser{
 		UserID:         record.UserID,
-		OrganizationID: record.OrganizationID,
+		UserName:       record.User.Name,
+		OrganizationID: record.Organization.ID,
 		IsAdmin:        record.Role == 1,
 	}, nil
 }
@@ -76,7 +71,7 @@ func (p UserPersistence) GetOrganizationUserRole(ctx context.Context, organizati
 func (p UserPersistence) GetUserIDFromToken(ctx context.Context, token string) (*string, error) {
 	user, err := p.CognitoClient.GetUserFromToken(ctx, token)
 	if err != nil {
-		return nil, err
+		return nil, entity.NewError(http.StatusUnauthorized, err)
 	}
 	return &user.ID, nil
 }

@@ -1,5 +1,7 @@
 package entity
 
+import "time"
+
 type Report struct {
 	// 日報レスポンス
 	ID string `json:"id"`
@@ -11,4 +13,6 @@ type Report struct {
 	ReviewBody *string `json:"reviewBody"`
 	// 実施したタスクリスト
 	Tasks []Task `json:"tasks"`
+	// 作成日時
+	Timestamp time.Time `json:"timestamp"`
 }

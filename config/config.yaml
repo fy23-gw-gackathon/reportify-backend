@@ -1,9 +1,12 @@
 database:
   url: ""
 app:
-  env: ""
+  debug: "false"
   port: 8080
 allowOrigins:
   - "http://localhost:3000"
 openAI:
   token: ""
+cognito:
+  userPoolID: "ap-northeast-1_EAP0uZ7mB"
+  clientID: ""

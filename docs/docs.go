@@ -18,6 +18,11 @@ const docTemplate = `{
     "paths": {
         "/organizations": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "description": "自分が所属する組織のみ取得できる",
                 "consumes": [
                     "application/json"
@@ -53,6 +58,11 @@ const docTemplate = `{
         },
         "/organizations/{organizationCode}": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -106,6 +116,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -176,6 +191,11 @@ const docTemplate = `{
         },
         "/organizations/{organizationCode}/reports": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -187,13 +207,6 @@ const docTemplate = `{
                 ],
                 "summary": "日報リスト取得API",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "ユーザID",
-                        "name": "userId",
-                        "in": "query",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "組織コード",
@@ -236,6 +249,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -249,17 +267,19 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ユーザID",
-                        "name": "userId",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "組織コード",
                         "name": "organizationCode",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "日報作成リクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.CreateReportRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -298,6 +318,11 @@ const docTemplate = `{
         },
         "/organizations/{organizationCode}/reports/{reportId}": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -311,13 +336,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ユーザID",
-                        "name": "userId",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "組織コード",
                         "name": "organizationCode",
                         "in": "path",
@@ -326,7 +344,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "日報ID",
-                        "name": "organizationCode",
+                        "name": "reportId",
                         "in": "path",
                         "required": true
                     }
@@ -335,7 +353,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.Report"
+                            "$ref": "#/definitions/controller.ReportResponse"
                         }
                     },
                     "401": {
@@ -361,6 +379,11 @@ const docTemplate = `{
         },
         "/organizations/{organizationCode}/users": {
             "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -406,6 +429,112 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "post": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "メンバー招待API",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "組織コード",
+                        "name": "organizationCode",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "メンバー招待リクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.InviteUserRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "400": {
+                        "description": "BadRequest",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/me": {
+            "get": {
+                "security": [
+                    {
+                        "Bearer": []
+                    }
+                ],
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "ログインユーザー取得API",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    }
+                }
             }
         }
     },
@@ -426,6 +555,15 @@ const docTemplate = `{
                 }
             }
         },
+        "controller.InviteUserRequest": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "description": "メールアドレス",
+                    "type": "string"
+                }
+            }
+        },
         "controller.OrganizationsResponse": {
             "type": "object",
             "properties": {
@@ -438,6 +576,42 @@ const docTemplate = `{
                 }
             }
         },
+        "controller.ReportResponse": {
+            "type": "object",
+            "properties": {
+                "body": {
+                    "description": "本文",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "日報レスポンス",
+                    "type": "string"
+                },
+                "reviewBody": {
+                    "description": "レビュー本文",
+                    "type": "string"
+                },
+                "tasks": {
+                    "description": "実施したタスクリスト",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Task"
+                    }
+                },
+                "timestamp": {
+                    "description": "作成日時",
+                    "type": "string"
+                },
+                "userId": {
+                    "description": "ユーザID",
+                    "type": "string"
+                },
+                "userName": {
+                    "description": "ユーザ名",
+                    "type": "string"
+                }
+            }
+        },
         "controller.ReportsResponse": {
             "type": "object",
             "properties": {
@@ -445,7 +619,7 @@ const docTemplate = `{
                     "description": "日報リスト",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/entity.Report"
+                        "$ref": "#/definitions/controller.ReportResponse"
                     }
                 }
             }
@@ -532,34 +706,6 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.Report": {
-            "type": "object",
-            "properties": {
-                "body": {
-                    "description": "本文",
-                    "type": "string"
-                },
-                "id": {
-                    "description": "日報レスポンス",
-                    "type": "string"
-                },
-                "reviewBody": {
-                    "description": "レビュー本文",
-                    "type": "string"
-                },
-                "tasks": {
-                    "description": "実施したタスクリスト",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Task"
-                    }
-                },
-                "userId": {
-                    "description": "ユーザID",
-                    "type": "string"
-                }
-            }
-        },
         "entity.Task": {
             "type": "object",
             "properties": {
@@ -613,6 +759,14 @@ const docTemplate = `{
                     "type": "boolean"
                 }
             }
+        }
+    },
+    "securityDefinitions": {
+        "Bearer": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
         }
     }
 }`

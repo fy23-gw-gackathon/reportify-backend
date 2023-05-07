@@ -9,11 +9,14 @@ services:
       - "8080:8080"
     volumes:
       - .:/app
+      - ~/.aws/:/root/.aws:ro
     depends_on:
       db:
         condition: service_healthy
+    env_file:
+      - .env
     environment:
-      APP_ENV: "dev"
+      AWS_SDK_LOAD_CONFIG: "true"
       DATABASE_URL: "db:db@tcp(db:3306)/db?charset=utf8&parseTime=true"
       TZ: Asia/Tokyo
   db:
@@ -31,6 +34,7 @@ services:
       retries: 10
     command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     volumes:
+      - ./data/mysql/my.conf:/etc/mysql/conf.d/my.cnf
       - ./data/init:/docker-entrypoint-initdb.d
     ports:
       - "3306:3306"

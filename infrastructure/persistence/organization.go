@@ -2,12 +2,12 @@ package persistence
 
 import (
 	"errors"
+	"github.com/fy23-gw-gackathon/reportify-backend/entity"
+	"github.com/fy23-gw-gackathon/reportify-backend/infrastructure/driver"
+	"github.com/fy23-gw-gackathon/reportify-backend/infrastructure/persistence/model"
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
 	"net/http"
-	"reportify-backend/entity"
-	"reportify-backend/infrastructure/driver"
-	"reportify-backend/infrastructure/persistence/model"
 )
 
 type OrganizationPersistence struct{}

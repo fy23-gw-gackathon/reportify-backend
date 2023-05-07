@@ -1,8 +1,8 @@
 package usecase
 
 import (
+	"github.com/fy23-gw-gackathon/reportify-backend/entity"
 	"golang.org/x/net/context"
-	"reportify-backend/entity"
 )
 
 type UserUseCase struct {

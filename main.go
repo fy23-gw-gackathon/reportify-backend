@@ -2,21 +2,26 @@ package main
 
 import (
 	"fmt"
+	"github.com/fy23-gw-gackathon/reportify-backend/config"
+	"github.com/fy23-gw-gackathon/reportify-backend/controller"
+	"github.com/fy23-gw-gackathon/reportify-backend/entity"
+	"github.com/fy23-gw-gackathon/reportify-backend/infrastructure/driver"
+	"github.com/fy23-gw-gackathon/reportify-backend/infrastructure/middleware"
+	"github.com/fy23-gw-gackathon/reportify-backend/infrastructure/persistence"
+	"github.com/fy23-gw-gackathon/reportify-backend/usecase"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"log"
 	"net/http"
-	"reportify-backend/config"
-	"reportify-backend/controller"
-	"reportify-backend/docs"
-	"reportify-backend/entity"
-	"reportify-backend/infrastructure/driver"
-	"reportify-backend/infrastructure/middleware"
-	"reportify-backend/infrastructure/persistence"
-	"reportify-backend/usecase"
 )
 
+// @title                      Reportify
+// @version                    1.0
+// @description                Reportify
+// @host                       localhost:8080
+// @BasePath                   /
+// @schemes                    http
 // @securityDefinitions.apikey Bearer
 // @in                         header
 // @name                       Authorization
@@ -25,15 +30,16 @@ func main() {
 	// Dependency Injection
 	cfg := config.Load()
 	db := driver.NewDB(cfg)
+	redis := driver.NewRedisClient(cfg.Datastore.Address)
 	cognitoClient := driver.NewCognitoClient(cfg)
 
 	userPersistence := persistence.NewUserPersistence(cognitoClient)
 	organizationPersistence := persistence.NewOrganizationPersistence()
-	reportPersistence := persistence.NewReportPersistence()
+	reportPersistence := persistence.NewReportPersistence(redis)
 
 	userUseCase := usecase.NewUserUseCase(userPersistence, organizationPersistence)
 	organizationUseCase := usecase.NewOrganizationUseCase(organizationPersistence, userPersistence)
-	reportUseCase := usecase.NewReportUseCase(reportPersistence, userPersistence)
+	reportUseCase := usecase.NewReportUseCase(reportPersistence, userPersistence, organizationPersistence)
 
 	userController := controller.NewUserController(userUseCase)
 	organizationController := controller.NewOrganizationController(organizationUseCase)
@@ -48,6 +54,7 @@ func main() {
 		ctx.String(http.StatusOK, "It works")
 	})
 	app.GET("/users/me", handleResponse(userController.GetMe))
+	app.PUT("/reports/:reportId", handleResponse(reportController.ReviewReport, http.StatusNoContent))
 
 	orgs := app.Group("/organizations")
 	orgs.Use(middleware.Authentication(userPersistence, cfg))
@@ -67,12 +74,6 @@ func main() {
 }
 
 func runApp(app *gin.Engine, port int) {
-	docs.SwaggerInfo.Title = "Reportify"
-	docs.SwaggerInfo.Description = "Reportify"
-	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = fmt.Sprintf("localhost:%d", port)
-	docs.SwaggerInfo.BasePath = "/"
-	docs.SwaggerInfo.Schemes = []string{"http"}
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	log.Println(fmt.Sprintf("http://localhost:%d", port))
 	log.Println(fmt.Sprintf("http://localhost:%d/swagger/index.html", port))

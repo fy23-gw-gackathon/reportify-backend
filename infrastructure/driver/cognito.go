@@ -7,10 +7,10 @@ import (
 	awsConfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
+	"github.com/fy23-gw-gackathon/reportify-backend/config"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/net/context"
 	"log"
-	"reportify-backend/config"
 )
 
 type CognitoClient struct {

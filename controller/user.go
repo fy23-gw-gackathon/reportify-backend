@@ -2,9 +2,9 @@ package controller
 
 import (
 	"errors"
+	"github.com/fy23-gw-gackathon/reportify-backend/entity"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"reportify-backend/entity"
 	"strings"
 )
 

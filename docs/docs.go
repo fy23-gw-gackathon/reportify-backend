@@ -498,6 +498,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/reports/{reportId}": {
+            "put": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Report"
+                ],
+                "summary": "バッチ処理用の日報レビューAPI",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "日報ID",
+                        "name": "reportId",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "日報レビューリクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/entity.ReviewReportRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/entity.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/me": {
             "get": {
                 "security": [
@@ -706,6 +749,14 @@ const docTemplate = `{
                 }
             }
         },
+        "entity.ReviewReportRequest": {
+            "type": "object",
+            "properties": {
+                "reviewBody": {
+                    "type": "string"
+                }
+            }
+        },
         "entity.Task": {
             "type": "object",
             "properties": {
@@ -773,12 +824,12 @@ const docTemplate = `{
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
-	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Version:          "1.0",
+	Host:             "localhost:8080",
+	BasePath:         "/",
+	Schemes:          []string{"http"},
+	Title:            "Reportify",
+	Description:      "Reportify",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

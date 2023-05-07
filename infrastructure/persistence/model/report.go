@@ -1,7 +1,7 @@
 package model
 
 import (
-	"reportify-backend/entity"
+	"github.com/fy23-gw-gackathon/reportify-backend/entity"
 	"time"
 )
 

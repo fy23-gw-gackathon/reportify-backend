@@ -1,6 +1,6 @@
 package model
 
-import "reportify-backend/entity"
+import "github.com/fy23-gw-gackathon/reportify-backend/entity"
 
 type OrganizationUser struct {
 	UserID         string

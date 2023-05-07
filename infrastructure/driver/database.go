@@ -1,10 +1,10 @@
 package driver
 
 import (
+	"github.com/fy23-gw-gackathon/reportify-backend/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
-	"reportify-backend/config"
 )
 
 const TxKey = "transactionKey"

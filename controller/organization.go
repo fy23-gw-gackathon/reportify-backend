@@ -1,9 +1,9 @@
 package controller
 
 import (
+	"github.com/fy23-gw-gackathon/reportify-backend/entity"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"reportify-backend/entity"
 )
 
 type OrganizationController struct {

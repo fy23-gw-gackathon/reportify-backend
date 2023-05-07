@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"github.com/fy23-gw-gackathon/reportify-backend/infrastructure/driver"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"reportify-backend/infrastructure/driver"
 )
 import "gorm.io/gorm"
 

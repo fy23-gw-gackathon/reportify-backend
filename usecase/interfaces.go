@@ -18,3 +18,9 @@ type OrganizationRepo interface {
 	GetOrganization(ctx context.Context, organizationCode, userID string) (*entity.Organization, error)
 	UpdateOrganization(ctx context.Context, oldOrganizationCode, organizationName, organizationCode, mission, vision, value string) (*entity.Organization, error)
 }
+
+type ReportRepo interface {
+	GetReports(ctx context.Context, organizationCode, userID string) ([]*entity.Report, error)
+	GetReport(ctx context.Context, organizationCode, reportID string) (*entity.Report, error)
+	CreateReport(ctx context.Context, organizationCode, userID, body string, task []entity.Task) (*entity.Report, error)
+}

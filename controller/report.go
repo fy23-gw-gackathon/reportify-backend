@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"errors"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -16,14 +15,10 @@ func NewReportController(u ReportUseCase) *ReportController {
 	return &ReportController{u}
 }
 
-type GetReportsQuery struct {
-	UserID string `form:"userId"`
-}
-
 // ReportsResponse - 日報リストレスポンス
 type ReportsResponse struct {
 	// 日報リスト
-	Reports []entity.Report `json:"reports"`
+	Reports []*entity.Report `json:"reports"`
 }
 
 // GetReports godoc
@@ -31,7 +26,6 @@ type ReportsResponse struct {
 // @Tags     Report
 // @Accept   json
 // @Produce  json
-// @Param    userId           query    string               true "ユーザID"
 // @Param    organizationCode path     string               true "組織コード"
 // @Success  200              {object} ReportsResponse      "OK"
 // @Failure  400              {object} entity.ErrorResponse "BadRequest"
@@ -41,17 +35,13 @@ type ReportsResponse struct {
 // @Router   /organizations/{organizationCode}/reports [get]
 // @Security Bearer
 func (c *ReportController) GetReports(ctx *gin.Context) (interface{}, error) {
-	var query GetReportsQuery
-	if err := ctx.ShouldBindQuery(&query); err != nil {
-		return nil, entity.NewError(http.StatusBadRequest, err)
-	}
-	if query.UserID == "" {
-		return nil, entity.NewError(http.StatusBadRequest, errors.New("userId is required"))
-	}
+	userID, _ := ctx.Get(entity.ContextKeyUserID)
+	id := userID.(string)
 	code := ctx.Params.ByName("organizationCode")
 	fmt.Println(code)
-	fmt.Println(query.UserID)
-	panic("not implemented")
+	fmt.Println(id)
+	reports, err := c.ReportUseCase.GetReports(ctx, code, id)
+	return ReportsResponse{reports}, err
 }
 
 // GetReport godoc
@@ -61,7 +51,7 @@ func (c *ReportController) GetReports(ctx *gin.Context) (interface{}, error) {
 // @Produce  json
 // @Param    userId           query    string               true "ユーザID"
 // @Param    organizationCode path     string               true "組織コード"
-// @Param    organizationCode path     string               true "日報ID"
+// @Param    reportId         path     string               true "日報ID"
 // @Success  200              {object} entity.Report        "OK"
 // @Failure  401              {object} entity.ErrorResponse "Unauthorized"
 // @Failure  403              {object} entity.ErrorResponse "Forbidden"
@@ -69,14 +59,14 @@ func (c *ReportController) GetReports(ctx *gin.Context) (interface{}, error) {
 // @Router   /organizations/{organizationCode}/reports/{reportId} [get]
 // @Security Bearer
 func (c *ReportController) GetReport(ctx *gin.Context) (interface{}, error) {
-	var req CreateReportRequest
-	if err := ctx.Bind(&req); err != nil {
-		return nil, entity.NewError(http.StatusBadRequest, err)
-	}
 	code := ctx.Params.ByName("organizationCode")
+	reportId := ctx.Params.ByName("reportId")
+	userID, _ := ctx.Get(entity.ContextKeyUserID)
+	id := userID.(string)
 	fmt.Println(code)
-	fmt.Println(req.Body)
-	panic("not implemented")
+	fmt.Println(reportId)
+	fmt.Println(id)
+	return c.ReportUseCase.GetReport(ctx, code, reportId, id)
 }
 
 // CreateReportRequest - 日報作成リクエスト
@@ -92,8 +82,8 @@ type CreateReportRequest struct {
 // @Tags     Report
 // @Accept   json
 // @Produce  json
-// @Param    userId           query    string               true "ユーザID"
 // @Param    organizationCode path     string               true "組織コード"
+// @Param    request          body     CreateReportRequest  true "日報作成リクエスト"
 // @Success  201              {object} CreateReportRequest  "Created"
 // @Failure  400              {object} entity.ErrorResponse "BadRequest"
 // @Failure  401              {object} entity.ErrorResponse "Unauthorized"
@@ -107,7 +97,10 @@ func (c *ReportController) CreateReport(ctx *gin.Context) (interface{}, error) {
 		return nil, entity.NewError(http.StatusBadRequest, err)
 	}
 	code := ctx.Params.ByName("organizationCode")
+	userID, _ := ctx.Get(entity.ContextKeyUserID)
+	id := userID.(string)
 	fmt.Println(code)
 	fmt.Println(req.Body)
-	panic("not implemented")
+	fmt.Println(id)
+	return c.ReportUseCase.CreateReport(ctx, code, id, req.Body, req.Tasks)
 }

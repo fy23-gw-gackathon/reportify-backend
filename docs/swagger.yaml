@@ -265,11 +265,6 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: ユーザID
-        in: query
-        name: userId
-        required: true
-        type: string
       - description: 組織コード
         in: path
         name: organizationCode
@@ -307,16 +302,17 @@ paths:
       consumes:
       - application/json
       parameters:
-      - description: ユーザID
-        in: query
-        name: userId
-        required: true
-        type: string
       - description: 組織コード
         in: path
         name: organizationCode
         required: true
         type: string
+      - description: 日報作成リクエスト
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.CreateReportRequest'
       produces:
       - application/json
       responses:
@@ -362,7 +358,7 @@ paths:
         type: string
       - description: 日報ID
         in: path
-        name: organizationCode
+        name: reportId
         required: true
         type: string
       produces:

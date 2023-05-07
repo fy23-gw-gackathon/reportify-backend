@@ -13,6 +13,7 @@ type Organization struct {
 	Vision            string
 	Value             string
 	OrganizationUsers []*OrganizationUser
+	Reports           []*Report
 	Users             []*User `gorm:"many2many:r_organization_users;"`
 	CreatedAt         time.Time
 	UpdatedAt         time.Time

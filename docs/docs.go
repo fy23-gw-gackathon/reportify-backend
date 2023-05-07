@@ -209,13 +209,6 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ユーザID",
-                        "name": "userId",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "組織コード",
                         "name": "organizationCode",
                         "in": "path",
@@ -274,17 +267,19 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "string",
-                        "description": "ユーザID",
-                        "name": "userId",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
                         "description": "組織コード",
                         "name": "organizationCode",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "日報作成リクエスト",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.CreateReportRequest"
+                        }
                     }
                 ],
                 "responses": {
@@ -356,7 +351,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "日報ID",
-                        "name": "organizationCode",
+                        "name": "reportId",
                         "in": "path",
                         "required": true
                     }

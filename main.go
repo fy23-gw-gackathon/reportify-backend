@@ -29,13 +29,15 @@ func main() {
 
 	userPersistence := persistence.NewUserPersistence(cognitoClient)
 	organizationPersistence := persistence.NewOrganizationPersistence()
+	reportPersistence := persistence.NewReportPersistence()
 
 	userUseCase := usecase.NewUserUseCase(userPersistence, organizationPersistence)
 	organizationUseCase := usecase.NewOrganizationUseCase(organizationPersistence, userPersistence)
+	reportUseCase := usecase.NewReportUseCase(reportPersistence, userPersistence)
 
 	userController := controller.NewUserController(userUseCase)
 	organizationController := controller.NewOrganizationController(organizationUseCase)
-	reportController := controller.NewReportController(nil)
+	reportController := controller.NewReportController(reportUseCase)
 
 	// Setup webserver
 	app := gin.Default()

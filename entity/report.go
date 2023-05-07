@@ -16,3 +16,13 @@ type Report struct {
 	// 作成日時
 	Timestamp time.Time `json:"timestamp"`
 }
+
+type PubSubMessage struct {
+	ID   string `json:"id"`
+	Body string `json:"body"`
+	Mvv  `json:"mvv"`
+}
+
+type ReviewReportRequest struct {
+	ReviewBody string `json:"reviewBody"`
+}

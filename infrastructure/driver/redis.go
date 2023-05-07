@@ -6,11 +6,6 @@ import (
 	"log"
 )
 
-type Message struct {
-	ID   string `json:"id"`
-	Body string `json:"body"`
-}
-
 const JobQueueKey = "job_queue"
 
 func NewRedisClient(addr string) *redis.Client {

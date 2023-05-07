@@ -95,10 +95,11 @@ func (p ReportPersistence) UpdateReviewBody(ctx context.Context, reportID string
 	return nil
 }
 
-func (p ReportPersistence) DispatchReport(ctx context.Context, reportID, body string) error {
-	payload, err := json.Marshal(&driver.Message{
+func (p ReportPersistence) DispatchReport(ctx context.Context, reportID, body string, mvv entity.Mvv) error {
+	payload, err := json.Marshal(&entity.PubSubMessage{
 		ID:   reportID,
 		Body: body,
+		Mvv:  mvv,
 	})
 	if err != nil {
 		return err

@@ -144,22 +144,18 @@ func (c *ReportController) CreateReport(ctx *gin.Context) (interface{}, error) {
 	}, nil
 }
 
-type ReviewReportRequest struct {
-	ReviewBody string `json:"reviewBody"`
-}
-
 // ReviewReport godoc
 // @Summary バッチ処理用の日報レビューAPI
 // @Tags     Report
 // @Accept   json
 // @Produce  json
 // @Param    reportId         path     string               true "日報ID"
-// @Param   request  body ReviewReportRequest true "日報レビューリクエスト"
+// @Param   request  body entity.ReviewReportRequest true "日報レビューリクエスト"
 // @Success 204      "No Content"
 // @Failure  404              {object} entity.ErrorResponse "Not Found"
 // @Router  /reports/{reportId} [put]
 func (c *ReportController) ReviewReport(ctx *gin.Context) (interface{}, error) {
-	var req ReviewReportRequest
+	var req *entity.ReviewReportRequest
 	if err := ctx.Bind(&req); err != nil {
 		return nil, entity.NewError(http.StatusBadRequest, err)
 	}

@@ -10,10 +10,11 @@ import (
 type ReportUseCase struct {
 	ReportRepo
 	UserRepo
+	OrganizationRepo
 }
 
-func NewReportUseCase(reportRepo ReportRepo, userRepo UserRepo) *ReportUseCase {
-	return &ReportUseCase{reportRepo, userRepo}
+func NewReportUseCase(reportRepo ReportRepo, userRepo UserRepo, organizationRepoRepo OrganizationRepo) *ReportUseCase {
+	return &ReportUseCase{reportRepo, userRepo, organizationRepoRepo}
 }
 
 func (u ReportUseCase) GetReports(ctx context.Context, organizationID string) ([]*entity.Report, error) {
@@ -29,7 +30,13 @@ func (u ReportUseCase) CreateReport(ctx context.Context, organizationID, userID,
 	if err != nil {
 		return nil, err
 	}
-	return reports, u.ReportRepo.DispatchReport(ctx, reports.ID, body)
+
+	organization, err := u.OrganizationRepo.GetOrganization(ctx, organizationID)
+	if err != nil {
+		return nil, err
+	}
+
+	return reports, u.ReportRepo.DispatchReport(ctx, reports.ID, body, organization.Mvv)
 }
 
 func (u ReportUseCase) ReviewReport(ctx context.Context, reportID, reviewBody string) error {

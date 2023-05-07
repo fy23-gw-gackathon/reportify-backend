@@ -39,7 +39,7 @@ func main() {
 
 	userUseCase := usecase.NewUserUseCase(userPersistence, organizationPersistence)
 	organizationUseCase := usecase.NewOrganizationUseCase(organizationPersistence, userPersistence)
-	reportUseCase := usecase.NewReportUseCase(reportPersistence, userPersistence)
+	reportUseCase := usecase.NewReportUseCase(reportPersistence, userPersistence, organizationPersistence)
 
 	userController := controller.NewUserController(userUseCase)
 	organizationController := controller.NewOrganizationController(organizationUseCase)

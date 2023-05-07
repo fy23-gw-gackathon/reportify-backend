@@ -24,5 +24,5 @@ type ReportRepo interface {
 	GetReports(ctx context.Context, organizationID string) ([]*entity.Report, error)
 	CreateReport(ctx context.Context, organizationID, userID string, body string, task []entity.Task) (*entity.Report, error)
 	UpdateReviewBody(ctx context.Context, reportID string, reviewBody string) error
-	DispatchReport(ctx context.Context, reportID, body string) error
+	DispatchReport(ctx context.Context, reportID, body string, mvv entity.Mvv) error
 }

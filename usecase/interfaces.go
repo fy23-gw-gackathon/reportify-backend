@@ -11,6 +11,8 @@ type UserRepo interface {
 	GetOrganizationUser(ctx context.Context, organizationCode string, userID string) (*entity.OrganizationUser, error)
 	GetUserIDFromToken(ctx context.Context, token string) (*string, error)
 	CreateUser(ctx context.Context, email, organizationID string) (*entity.User, error)
+	UpdateUserRole(ctx context.Context, organizationID, userID string, role bool) error
+	DeleteUser(ctx context.Context, organizationID, userID string) error
 }
 
 type OrganizationRepo interface {

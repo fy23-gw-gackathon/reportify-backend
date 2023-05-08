@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/fy23-gw-gackathon/reportify-backend/config"
 	"github.com/fy23-gw-gackathon/reportify-backend/controller"
+	"github.com/fy23-gw-gackathon/reportify-backend/docs"
 	"github.com/fy23-gw-gackathon/reportify-backend/entity"
 	"github.com/fy23-gw-gackathon/reportify-backend/infrastructure/driver"
 	"github.com/fy23-gw-gackathon/reportify-backend/infrastructure/middleware"
@@ -16,12 +17,6 @@ import (
 	"net/http"
 )
 
-// @title                      Reportify
-// @version                    1.0
-// @description                Reportify
-// @host                       localhost:8080
-// @BasePath                   /
-// @schemes                    http
 // @securityDefinitions.apikey Bearer
 // @in                         header
 // @name                       Authorization
@@ -69,11 +64,19 @@ func main() {
 
 	org.GET("/users", handleResponse(userController.GetUsers))
 	org.POST("/users", handleResponse(userController.InviteUser))
+	org.PUT("/users/:userId", handleResponse(userController.UpdateUserRole))
+	org.DELETE("/users/:userId", handleResponse(userController.DeleteUser))
 
 	runApp(app, cfg.App.Port)
 }
 
 func runApp(app *gin.Engine, port int) {
+	docs.SwaggerInfo.Title = "Reportify"
+	docs.SwaggerInfo.Description = "Reportify"
+	docs.SwaggerInfo.Version = "1.0"
+	docs.SwaggerInfo.Host = fmt.Sprintf("localhost:%s", port)
+	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.Schemes = []string{"http"}
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	log.Println(fmt.Sprintf("http://localhost:%d", port))
 	log.Println(fmt.Sprintf("http://localhost:%d/swagger/index.html", port))

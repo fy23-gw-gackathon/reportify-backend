@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   controller.CreateReportRequest:
     properties:
@@ -76,6 +75,12 @@ definitions:
       vision:
         description: ビジョン
         type: string
+    type: object
+  controller.UpdateUserRoleRequest:
+    properties:
+      role:
+        description: ロール
+        type: boolean
     type: object
   controller.UsersResponse:
     properties:
@@ -159,12 +164,8 @@ definitions:
         description: ロール
         type: boolean
     type: object
-host: localhost:8080
 info:
   contact: {}
-  description: Reportify
-  title: Reportify
-  version: "1.0"
 paths:
   /organizations:
     get:
@@ -473,6 +474,93 @@ paths:
       summary: メンバー招待API
       tags:
       - User
+  /organizations/{organizationCode}/users/{userId}:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: 組織コード
+        in: path
+        name: organizationCode
+        required: true
+        type: string
+      - description: ユーザーID
+        in: path
+        name: userId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: ユーザー削除API
+      tags:
+      - User
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: 組織コード
+        in: path
+        name: organizationCode
+        required: true
+        type: string
+      - description: ユーザーID
+        in: path
+        name: userId
+        required: true
+        type: string
+      - description: ユーザーロール更新リクエスト
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.UpdateUserRoleRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+        "400":
+          description: BadRequest
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/entity.ErrorResponse'
+      security:
+      - Bearer: []
+      summary: ユーザーロール更新API
+      tags:
+      - User
   /reports/{reportId}:
     put:
       consumes:
@@ -525,8 +613,6 @@ paths:
       summary: ログインユーザー取得API
       tags:
       - User
-schemes:
-- http
 securityDefinitions:
   Bearer:
     description: Type "Bearer" followed by a space and JWT token.

@@ -115,7 +115,19 @@ type UpdateUserRoleRequest struct {
 // @Router   /organizations/{organizationCode}/users/{userId} [put]
 // @Security Bearer
 func (c UserController) UpdateUserRole(ctx *gin.Context) (interface{}, error) {
-	return nil, nil
+	var req UpdateUserRoleRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		return nil, entity.NewError(http.StatusBadRequest, err)
+	}
+	user, _ := ctx.Get(entity.ContextKeyUser)
+	oUser := user.(*entity.OrganizationUser)
+
+	if !oUser.IsAdmin {
+		return nil, entity.NewError(http.StatusForbidden, errors.New("you are not admin"))
+	}
+
+	userID := ctx.Param("userId")
+	return nil, c.UserUseCase.UpdateUserRole(ctx, oUser.OrganizationID, userID, req.Role)
 }
 
 // DeleteUser godoc
@@ -132,5 +144,13 @@ func (c UserController) UpdateUserRole(ctx *gin.Context) (interface{}, error) {
 // @Router   /organizations/{organizationCode}/users/{userId} [delete]
 // @Security Bearer
 func (c UserController) DeleteUser(ctx *gin.Context) (interface{}, error) {
-	return nil, nil
+	user, _ := ctx.Get(entity.ContextKeyUser)
+	oUser := user.(*entity.OrganizationUser)
+
+	if !oUser.IsAdmin {
+		return nil, entity.NewError(http.StatusForbidden, errors.New("you are not admin"))
+	}
+
+	userID := ctx.Param("userId")
+	return nil, c.UserUseCase.DeleteUser(ctx, oUser.OrganizationID, userID)
 }

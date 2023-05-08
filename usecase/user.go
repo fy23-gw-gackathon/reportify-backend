@@ -35,3 +35,11 @@ func (u UserUseCase) InviteUser(ctx context.Context, email, organizationID strin
 
 	return user, nil
 }
+
+func (u UserUseCase) UpdateUserRole(ctx context.Context, organizationID, userID string, role bool) error {
+	return u.UserRepo.UpdateUserRole(ctx, organizationID, userID, role)
+}
+
+func (u UserUseCase) DeleteUser(ctx context.Context, organizationID, userID string) error {
+	return u.UserRepo.DeleteUser(ctx, organizationID, userID)
+}

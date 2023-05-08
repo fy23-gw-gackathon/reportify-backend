@@ -139,3 +139,45 @@ func (p UserPersistence) CreateUser(ctx context.Context, email, organizationID s
 
 	return user.ToEntity(), nil
 }
+
+func (p UserPersistence) UpdateUserRole(ctx context.Context, organizationID, userID string, role bool) error {
+	db, _ := ctx.Value(driver.TxKey).(*gorm.DB)
+	var record *model.OrganizationUser
+	if err := db.Where("user_id = ? AND organization_id = ?", userID, organizationID).First(&record).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return entity.NewError(http.StatusNotFound, err)
+		}
+		return err
+	}
+	roleInt := 0
+	if role {
+		roleInt = 1
+	}
+	if err := db.Model(&record).Where("user_id = ? AND organization_id = ?", userID, organizationID).Update("role", roleInt).Error; err != nil {
+		var mysqlErr *mysql.MySQLError
+		if errors.As(err, &mysqlErr) && mysqlErr.Number == driver.ErrDuplicateEntryNumber {
+			return entity.NewError(http.StatusConflict, err)
+		}
+		return err
+	}
+	return nil
+}
+
+func (p UserPersistence) DeleteUser(ctx context.Context, organizationID, userID string) error {
+	db, _ := ctx.Value(driver.TxKey).(*gorm.DB)
+	var record *model.OrganizationUser
+	if err := db.Where("user_id = ? AND organization_id = ?", userID, organizationID).First(&record).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return entity.NewError(http.StatusNotFound, err)
+		}
+		return err
+	}
+	if err := db.Where("user_id = ? AND organization_id = ?", userID, organizationID).Delete(&record).Error; err != nil {
+		var mysqlErr *mysql.MySQLError
+		if errors.As(err, &mysqlErr) && mysqlErr.Number == driver.ErrDuplicateEntryNumber {
+			return entity.NewError(http.StatusConflict, err)
+		}
+		return err
+	}
+	return nil
+}

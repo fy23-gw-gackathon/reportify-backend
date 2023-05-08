@@ -9,6 +9,8 @@ type UserUseCase interface {
 	GetUserFromToken(ctx context.Context, token string) (*entity.User, error)
 	GetUsers(ctx context.Context, organizationID string) ([]*entity.User, error)
 	InviteUser(ctx context.Context, email, organizationID string) (*entity.User, error)
+	UpdateUserRole(ctx context.Context, organizationID, userID string, role bool) error
+	DeleteUser(ctx context.Context, organizationID, userID string) error
 }
 
 type OrganizationUseCase interface {

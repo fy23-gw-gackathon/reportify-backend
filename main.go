@@ -74,7 +74,7 @@ func runApp(app *gin.Engine, port int) {
 	docs.SwaggerInfo.Title = "Reportify"
 	docs.SwaggerInfo.Description = "Reportify"
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = fmt.Sprintf("localhost:%s", port)
+	docs.SwaggerInfo.Host = fmt.Sprintf("localhost:%d", port)
 	docs.SwaggerInfo.BasePath = "/"
 	docs.SwaggerInfo.Schemes = []string{"http"}
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

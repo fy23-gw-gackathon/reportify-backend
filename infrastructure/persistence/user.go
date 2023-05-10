@@ -69,11 +69,11 @@ func (p UserPersistence) GetOrganizationUser(ctx context.Context, organizationCo
 }
 
 func (p UserPersistence) GetUserIDFromToken(ctx context.Context, token string) (*string, error) {
-	user, err := p.CognitoClient.GetUserFromToken(ctx, token)
+	cognitoUser, err := p.CognitoClient.GetUserFromToken(ctx, token)
 	if err != nil {
 		return nil, entity.NewError(http.StatusUnauthorized, err)
 	}
-	return &user.ID, nil
+	return &cognitoUser.UserID, nil
 }
 
 func (p UserPersistence) CreateUser(ctx context.Context, email, organizationID string) (*entity.User, error) {

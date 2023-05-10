@@ -10,5 +10,6 @@ func Cors(cfg config.Config) gin.HandlerFunc {
 	conf := cors.DefaultConfig()
 	conf.AllowOrigins = cfg.AllowOrigins
 	conf.AllowCredentials = true
+	conf.AllowHeaders = append(conf.AllowHeaders, "Authorization")
 	return cors.New(conf)
 }

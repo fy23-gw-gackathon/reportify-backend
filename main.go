@@ -50,22 +50,22 @@ func main() {
 	})
 	app.GET("/users/me", handleResponse(userController.GetMe))
 	app.PUT("/reports/:reportId", handleResponse(reportController.ReviewReport, http.StatusNoContent))
-
 	orgs := app.Group("/organizations")
 	orgs.Use(middleware.Authentication(userPersistence, cfg))
-	orgs.GET("/", handleResponse(organizationController.GetOrganizations))
-	org := orgs.Group("/:organizationCode")
-	org.GET("/", handleResponse(organizationController.GetOrganization))
-	org.PUT("/", handleResponse(organizationController.UpdateOrganization))
+	{
+		orgs.GET("/", handleResponse(organizationController.GetOrganizations))
+		orgs.GET("/:organizationCode", handleResponse(organizationController.GetOrganization))
+		orgs.PUT("/:organizationCode", handleResponse(organizationController.UpdateOrganization))
 
-	org.GET("/reports", handleResponse(reportController.GetReports))
-	org.POST("/reports", handleResponse(reportController.CreateReport, http.StatusCreated))
-	org.GET("/reports/:reportId", handleResponse(reportController.GetReport))
+		orgs.GET("/:organizationCode/reports", handleResponse(reportController.GetReports))
+		orgs.POST("/:organizationCode/reports", handleResponse(reportController.CreateReport, http.StatusCreated))
+		orgs.GET("/:organizationCode/reports/:reportId", handleResponse(reportController.GetReport))
 
-	org.GET("/users", handleResponse(userController.GetUsers))
-	org.POST("/users", handleResponse(userController.InviteUser))
-	org.PUT("/users/:userId", handleResponse(userController.UpdateUserRole))
-	org.DELETE("/users/:userId", handleResponse(userController.DeleteUser))
+		orgs.GET("/:organizationCode/users", handleResponse(userController.GetUsers))
+		orgs.POST("/:organizationCode/users", handleResponse(userController.InviteUser))
+		orgs.PUT("/:organizationCode/users/:userId", handleResponse(userController.UpdateUserRole))
+		orgs.DELETE("/:organizationCode/users/:userId", handleResponse(userController.DeleteUser))
+	}
 
 	runApp(app, cfg.App.Port)
 }

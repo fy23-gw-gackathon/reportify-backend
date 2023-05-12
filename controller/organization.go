@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"errors"
 	"github.com/fy23-gw-gackathon/reportify-backend/entity"
 	"github.com/gin-gonic/gin"
 	"net/http"
@@ -98,5 +99,8 @@ func (c *OrganizationController) UpdateOrganization(ctx *gin.Context) (interface
 	}
 	user, _ := ctx.Get(entity.ContextKeyUser)
 	oUser := user.(*entity.OrganizationUser)
+	if !oUser.IsAdmin {
+		return nil, entity.NewError(http.StatusForbidden, errors.New("you are not admin"))
+	}
 	return c.OrganizationUseCase.UpdateOrganization(ctx, oUser.OrganizationID, req.Name, req.Code, req.Mission, req.Vision, req.Value)
 }

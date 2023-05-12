@@ -37,7 +37,7 @@ func (p UserPersistence) GetUsers(ctx context.Context, organizationID string) ([
 	var record *model.Organization
 	if err := db.
 		Where("id = ?", organizationID).
-		Preload("Users").
+		Preload("Users.OrganizationUsers").
 		Find(&record).Error; err != nil {
 		return nil, err
 	}
@@ -51,7 +51,7 @@ func (p UserPersistence) GetUsers(ctx context.Context, organizationID string) ([
 func (p UserPersistence) GetOrganizationUser(ctx context.Context, organizationCode string, userID string) (*entity.OrganizationUser, error) {
 	db, _ := ctx.Value(driver.TxKey).(*gorm.DB)
 	var record *model.OrganizationUser
-	if err := db.Preload("User", "id = ?", userID).Preload("Organization", "code = ?", organizationCode).First(&record).Error; err != nil {
+	if err := db.Where("user_id = ?", userID).Preload("User").Preload("Organization", "code = ?", organizationCode).First(&record).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, entity.NewError(http.StatusNotFound, err)
 		}

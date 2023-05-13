@@ -2,14 +2,15 @@ package persistence
 
 import (
 	"errors"
+	"net/http"
+	"strings"
+
 	"github.com/fy23-gw-gackathon/reportify-backend/entity"
 	"github.com/fy23-gw-gackathon/reportify-backend/infrastructure/driver"
 	"github.com/fy23-gw-gackathon/reportify-backend/infrastructure/persistence/model"
 	"github.com/go-sql-driver/mysql"
 	"golang.org/x/net/context"
 	"gorm.io/gorm"
-	"net/http"
-	"strings"
 )
 
 type UserPersistence struct {
@@ -23,7 +24,7 @@ func NewUserPersistence(client *driver.CognitoClient) *UserPersistence {
 func (p UserPersistence) GetUser(ctx context.Context, userID string) (*entity.User, error) {
 	db, _ := ctx.Value(driver.TxKey).(*gorm.DB)
 	var record *model.User
-	if err := db.Preload("OrganizationUser").First(&record, userID).Error; err != nil {
+	if err := db.Preload("OrganizationUsers").First(&record, "id = ?", userID).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, err
 		}

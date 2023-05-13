@@ -70,7 +70,7 @@ func (c *ReportController) GetReports(ctx *gin.Context) (interface{}, error) {
 			Timestamp:  report.Timestamp,
 		})
 	}
-	return reportResponses, nil
+	return ReportsResponse{Reports: reportResponses}, nil
 }
 
 // GetReport godoc

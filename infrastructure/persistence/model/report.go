@@ -23,9 +23,14 @@ func (m Report) ToEntity() *entity.Report {
 	for _, t := range m.Tasks {
 		tasks = append(tasks, *t.ToEntity())
 	}
+	var userName string
+	if m.User != nil {
+		userName = m.User.Name
+	}
 	return &entity.Report{
 		ID:         m.ID,
 		UserID:     m.UserID,
+		UserName:   userName,
 		Body:       m.Body,
 		ReviewBody: m.ReviewBody,
 		Tasks:      tasks,

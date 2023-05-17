@@ -32,7 +32,7 @@ func (h handler) CommentReport(payload string) error {
 		return err
 	}
 
-	if _, err = h.Http.Put(fmt.Sprintf("http://backend:8080/reports/%s", m.ID), d); err != nil {
+	if _, err = h.Http.Put(fmt.Sprintf("http://backend:8080/api/v1/reports/%s", m.ID), d); err != nil {
 		return err
 	}
 	return nil

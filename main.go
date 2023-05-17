@@ -48,9 +48,10 @@ func main() {
 	app.GET("/", func(ctx *gin.Context) {
 		ctx.String(http.StatusOK, "It works")
 	})
-	app.GET("/users/me", handleResponse(userController.GetMe))
-	app.PUT("/reports/:reportId", handleResponse(reportController.ReviewReport, http.StatusNoContent))
-	orgs := app.Group("/organizations")
+	api := app.Group("/api/v1")
+	api.GET("/users/me", handleResponse(userController.GetMe))
+	api.PUT("/reports/:reportId", handleResponse(reportController.ReviewReport, http.StatusNoContent))
+	orgs := api.Group("/organizations")
 	orgs.Use(middleware.Authentication(userPersistence, cfg))
 	{
 		orgs.GET("/", handleResponse(organizationController.GetOrganizations))
@@ -75,7 +76,7 @@ func runApp(app *gin.Engine, port int) {
 	docs.SwaggerInfo.Description = "Reportify"
 	docs.SwaggerInfo.Version = "1.0"
 	docs.SwaggerInfo.Host = fmt.Sprintf("localhost:%d", port)
-	docs.SwaggerInfo.BasePath = "/"
+	docs.SwaggerInfo.BasePath = "/api/v1"
 	docs.SwaggerInfo.Schemes = []string{"http"}
 	app.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	log.Println(fmt.Sprintf("http://localhost:%d", port))

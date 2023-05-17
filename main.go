@@ -51,22 +51,19 @@ func main() {
 	api := app.Group("/api/v1")
 	api.GET("/users/me", handleResponse(userController.GetMe))
 	api.PUT("/reports/:reportId", handleResponse(reportController.ReviewReport, http.StatusNoContent))
-	orgs := api.Group("/organizations")
-	orgs.Use(middleware.Authentication(userPersistence, cfg))
-	{
-		orgs.GET("/", handleResponse(organizationController.GetOrganizations))
-		orgs.GET("/:organizationCode", handleResponse(organizationController.GetOrganization))
-		orgs.PUT("/:organizationCode", handleResponse(organizationController.UpdateOrganization))
+	api.Use(middleware.Authentication(userPersistence, cfg))
+	api.GET("/organizations", handleResponse(organizationController.GetOrganizations))
+	api.GET("/organizations/:organizationCode", handleResponse(organizationController.GetOrganization))
+	api.PUT("/organizations/:organizationCode", handleResponse(organizationController.UpdateOrganization))
 
-		orgs.GET("/:organizationCode/reports", handleResponse(reportController.GetReports))
-		orgs.POST("/:organizationCode/reports", handleResponse(reportController.CreateReport, http.StatusCreated))
-		orgs.GET("/:organizationCode/reports/:reportId", handleResponse(reportController.GetReport))
+	api.GET("/organizations/:organizationCode/reports", handleResponse(reportController.GetReports))
+	api.POST("/organizations/:organizationCode/reports", handleResponse(reportController.CreateReport, http.StatusCreated))
+	api.GET("/organizations/:organizationCode/reports/:reportId", handleResponse(reportController.GetReport))
 
-		orgs.GET("/:organizationCode/users", handleResponse(userController.GetUsers))
-		orgs.POST("/:organizationCode/users", handleResponse(userController.InviteUser))
-		orgs.PUT("/:organizationCode/users/:userId", handleResponse(userController.UpdateUserRole))
-		orgs.DELETE("/:organizationCode/users/:userId", handleResponse(userController.DeleteUser))
-	}
+	api.GET("/organizations/:organizationCode/users", handleResponse(userController.GetUsers))
+	api.POST("/organizations/:organizationCode/users", handleResponse(userController.InviteUser))
+	api.PUT("/organizations/:organizationCode/users/:userId", handleResponse(userController.UpdateUserRole))
+	api.DELETE("/organizations/:organizationCode/users/:userId", handleResponse(userController.DeleteUser))
 
 	runApp(app, cfg.App.Port)
 }

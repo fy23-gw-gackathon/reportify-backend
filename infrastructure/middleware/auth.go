@@ -29,7 +29,7 @@ func Authentication(
 		} else {
 			uid, err := repo.GetUserIDFromToken(context.Background(), token)
 			if err != nil {
-				c.AbortWithStatusJSON(http.StatusUnauthorized, err.Error())
+				c.JSON(http.StatusUnauthorized, entity.ErrorResponse{Message: err.Error()})
 				return
 			}
 			userID = *uid
@@ -40,7 +40,7 @@ func Authentication(
 			var err error
 			user, err = repo.GetOrganizationUser(c, code, userID)
 			if err != nil {
-				c.AbortWithStatusJSON(http.StatusForbidden, err.Error())
+				c.JSON(http.StatusUnauthorized, entity.ErrorResponse{Message: err.Error()})
 				return
 			}
 		} else {

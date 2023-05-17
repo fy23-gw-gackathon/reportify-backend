@@ -4,7 +4,6 @@ import (
 	"github.com/fy23-gw-gackathon/reportify-backend/entity"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"time"
 )
 
 type ReportController struct {
@@ -18,24 +17,7 @@ func NewReportController(u ReportUseCase) *ReportController {
 // ReportsResponse - 日報リストレスポンス
 type ReportsResponse struct {
 	// 日報リスト
-	Reports []*ReportResponse `json:"reports"`
-}
-
-type ReportResponse struct {
-	// 日報レスポンス
-	ID string `json:"id"`
-	// ユーザID
-	UserID string `json:"userId"`
-	// ユーザ名
-	UserName string `json:"userName"`
-	// 本文
-	Body string `json:"body"`
-	// レビュー本文
-	ReviewBody *string `json:"reviewBody"`
-	// 実施したタスクリスト
-	Tasks []entity.Task `json:"tasks"`
-	// 作成日時
-	Timestamp time.Time `json:"timestamp"`
+	Reports []*entity.Report `json:"reports"`
 }
 
 // GetReports godoc
@@ -58,19 +40,7 @@ func (c *ReportController) GetReports(ctx *gin.Context) (interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	var reportResponses []*ReportResponse
-	for _, report := range reports {
-		reportResponses = append(reportResponses, &ReportResponse{
-			ID:         report.ID,
-			UserID:     report.UserID,
-			UserName:   oUser.UserName,
-			Body:       report.Body,
-			ReviewBody: report.ReviewBody,
-			Tasks:      report.Tasks,
-			Timestamp:  report.Timestamp,
-		})
-	}
-	return ReportsResponse{Reports: reportResponses}, nil
+	return ReportsResponse{Reports: reports}, nil
 }
 
 // GetReport godoc
@@ -90,19 +60,7 @@ func (c *ReportController) GetReport(ctx *gin.Context) (interface{}, error) {
 	reportId := ctx.Params.ByName("reportId")
 	user, _ := ctx.Get(entity.ContextKeyUser)
 	oUser := user.(*entity.OrganizationUser)
-	report, err := c.ReportUseCase.GetReport(ctx, oUser.OrganizationID, reportId)
-	if err != nil {
-		return nil, err
-	}
-	return &ReportResponse{
-		ID:         reportId,
-		UserID:     report.UserID,
-		UserName:   oUser.UserName,
-		Body:       report.Body,
-		ReviewBody: report.ReviewBody,
-		Tasks:      report.Tasks,
-		Timestamp:  report.Timestamp,
-	}, nil
+	return c.ReportUseCase.GetReport(ctx, oUser.OrganizationID, reportId)
 }
 
 // CreateReportRequest - 日報作成リクエスト

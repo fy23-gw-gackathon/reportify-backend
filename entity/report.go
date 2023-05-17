@@ -7,6 +7,8 @@ type Report struct {
 	ID string `json:"id"`
 	// ユーザID
 	UserID string `json:"userId"`
+	// ユーザー名
+	UserName string `json:"userName"`
 	// 本文
 	Body string `json:"body"`
 	// レビュー本文

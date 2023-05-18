@@ -2,6 +2,7 @@ package persistence
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -52,12 +53,13 @@ func (p UserPersistence) GetUsers(ctx context.Context, organizationID string) ([
 func (p UserPersistence) GetOrganizationUser(ctx context.Context, organizationCode string, userID string) (*entity.OrganizationUser, error) {
 	db, _ := ctx.Value(driver.TxKey).(*gorm.DB)
 	var record *model.OrganizationUser
-	if err := db.Where("user_id = ?", userID).Preload("User").Preload("Organization", "code = ?", organizationCode).First(&record).Error; err != nil {
+	if err := db.Debug().Joins("User").Joins("Organization").First(&record, "user_id = ? AND code = ?", userID, organizationCode).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, entity.NewError(http.StatusNotFound, err)
 		}
 		return nil, err
 	}
+	fmt.Println(record)
 	if record.Organization == nil {
 		return nil, entity.NewError(http.StatusNotFound, errors.New("organization not found"))
 	}
